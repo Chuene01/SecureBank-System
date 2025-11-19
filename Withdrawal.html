@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank | Withdrawal</title>
+    <style>
+        /* CSS Variables for Design System */
+        :root {
+            /* Colors */
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --text-dark: #1f2937;
+            --text-medium: #6b7280;
+            --text-light: #9ca3af;
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+            --bg-gray: #f3f4f6;
+            --border: #e5e7eb;
+            
+            /* Typography */
+            --font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --h1: 2rem;
+            --h2: 1.5rem;
+            --h3: 1.25rem;
+            --body: 1rem;
+            --small: 0.875rem;
+            --tiny: 0.75rem;
+            --balance: 2.5rem;
+            
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-xxl: 48px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            /* Breakpoints */
+            --mobile: 320px;
+            --tablet: 768px;
+            --desktop: 1024px;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.5;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--primary);
+        }
+        
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+        }
+        
+        input {
+            font-family: inherit;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-md) 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: var(--h2);
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+        
+        .nav-link {
+            color: var(--text-medium);
+            font-weight: 500;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background-color: var(--bg-gray);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main {
+            padding: var(--space-xl) 0;
+        }
+        
+        .page-title {
+            font-size: var(--h1);
+            font-weight: 700;
+            margin-bottom: var(--space-lg);
+            color: var(--text-dark);
+        }
+        
+        /* Cards */
+        .card {
+            background-color: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        /* Balance Display */
+        .balance-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .balance-label {
+            font-size: var(--h3);
+            color: var(--text-medium);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .balance-amount {
+            font-size: var(--balance);
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .balance-toggle {
+            background: none;
+            color: var(--text-medium);
+            font-size: var(--small);
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: var(--space-md);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--body);
+            transition: all 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .input-field.error {
+            border-color: var(--error);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: var(--small);
+            margin-top: var(--space-xs);
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Suggested Amounts */
+        .suggested-amounts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .amount-btn {
+            padding: var(--space-md) var(--space-lg);
+            background-color: var(--bg-gray);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        
+        .amount-btn:hover {
+            background-color: var(--border);
+        }
+        
+        .amount-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: var(--body);
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-primary:disabled {
+            background-color: var(--text-light);
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-medium);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--bg-gray);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: var(--space-md);
+        }
+        
+        /* Warning States */
+        .warning-message {
+            background-color: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-lg);
+            display: none;
+        }
+        
+        .warning-message.show {
+            display: block;
+        }
+        
+        .warning-icon {
+            color: var(--warning);
+            margin-right: var(--space-sm);
+        }
+        
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal {
+            background-color: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--success);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .modal-title {
+            font-size: var(--h2);
+            margin-bottom: var(--space-md);
+        }
+        
+        .modal-message {
+            color: var(--text-medium);
+            margin-bottom: var(--space-xl);
+        }
+        
+        /* Transaction History Styles */
+        .filters {
+            display: flex;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .filter-label {
+            font-size: var(--small);
+            font-weight: 500;
+            color: var(--text-medium);
+        }
+        
+        .filter-select {
+            padding: var(--space-md);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-white);
+            font-size: var(--body);
+        }
+        
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .transaction-table th {
+            text-align: left;
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            color: var(--text-medium);
+            font-size: var(--small);
+        }
+        
+        .transaction-table td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .transaction-type {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--small);
+            font-weight: 500;
+        }
+        
+        .transaction-type.deposit {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .transaction-type.withdrawal {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+        
+        .transaction-amount.positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .transaction-amount.negative {
+            color: var(--error);
+            font-weight: 600;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-xxl);
+            color: var(--text-medium);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-lg);
+            color: var(--text-light);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 767px) {
+            .header-content {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .balance-display {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-md);
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .suggested-amounts {
+                justify-content: space-between;
+            }
+            
+            .amount-btn {
+                flex: 1;
+                min-width: 80px;
+                text-align: center;
+            }
+            
+            .transaction-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .container {
+                padding: 0 var(--space-lg);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                padding: 0 var(--space-xxl);
+            }
+            
+            .withdrawal-form {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+        
+        /* Loading State */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: var(--space-sm);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Page Navigation */
+        .page-navigation {
+            display: none;
+        }
+        
+        #withdrawalPage {
+            display: block;
+        }
+        
+        #transactionHistoryPage {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">SecureBank</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link" onclick="showPage('withdrawalPage')">Withdraw</a>
+                    <a href="#" class="nav-link" onclick="showPage('transactionHistoryPage')">Transaction History</a>
+                </div>
+                <div class="user-info">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Withdrawal Page -->
+            <div id="withdrawalPage" class="page">
+                <h1 class="page-title">Withdraw Money</h1>
+                
+                <div class="card">
+                    <!-- Balance Display -->
+                    <div class="balance-display">
+                        <div>
+                            <div class="balance-label">Available Balance</div>
+                            <div class="balance-amount">R<span id="currentBalance">5,250.00</span></div>
+                        </div>
+                        <button class="balance-toggle" id="balanceToggle">Show/Hide</button>
+                    </div>
+                    
+                    <!-- Warning for Low Balance -->
+                    <div class="warning-message" id="lowBalanceWarning">
+                        <span class="warning-icon">⚠</span>
+                        <span>Your withdrawal amount exceeds your available balance.</span>
+                    </div>
+                    
+                    <!-- Withdrawal Form -->
+                    <form class="withdrawal-form" id="withdrawalForm">
+                        <div class="form-group">
+                            <label for="amount" class="form-label">Amount to Withdraw (R)</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="amount" class="input-field" placeholder="0.00" step="0.01" min="0">
+                            </div>
+                            <div class="error-message" id="amountError">Please enter a valid amount</div>
+                        </div>
+                        
+                        <!-- Suggested Amounts -->
+                        <div class="suggested-amounts">
+                            <button type="button" class="amount-btn" data-amount="50">R50</button>
+                            <button type="button" class="amount-btn" data-amount="100">R100</button>
+                            <button type="button" class="amount-btn" data-amount="200">R200</button>
+                            <button type="button" class="amount-btn" data-amount="500">R500</button>
+                            <button type="button" class="amount-btn" id="customAmountBtn">Custom</button>
+                        </div>
+                        
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="confirmWithdrawal">
+                                <span class="spinner" id="withdrawalSpinner" style="display: none;"></span>
+                                Confirm Withdrawal
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="showPage('transactionHistoryPage')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Transaction History Page -->
+            <div id="transactionHistoryPage" class="page">
+                <h1 class="page-title">Transaction History</h1>
+                
+                <div class="card">
+                    <!-- Filters -->
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label class="filter-label">Transaction Type</label>
+                            <select class="filter-select" id="typeFilter">
+                                <option value="all">All Transactions</option>
+                                <option value="deposit">Deposits</option>
+                                <option value="withdrawal">Withdrawals</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Sort By</label>
+                            <select class="filter-select" id="sortFilter">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Transaction Table -->
+                    <div class="transaction-list">
+                        <table class="transaction-table">
+                            <thead>
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Transaction Type</th>
+                                    <th>Amount</th>
+                                    <th>Balance After</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionTableBody">
+                                <!-- Transactions will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                        
+                        <!-- Empty State -->
+                        <div class="empty-state" id="emptyState" style="display: none;">
+                            <div class="empty-state-icon">📋</div>
+                            <h3>No transactions yet</h3>
+                            <p>Your transaction history will appear here once you start using your account.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-icon">✓</div>
+            <h2 class="modal-title">Withdrawal Successful</h2>
+            <p class="modal-message">Your withdrawal of R<span id="withdrawalAmount">0.00</span> has been processed successfully.</p>
+            <button class="btn btn-primary" onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample transaction data
+        const sampleTransactions = [
+            {
+                id: 1,
+                date: new Date('2023-10-15T09:30:00'),
+                type: 'deposit',
+                amount: 2000.00,
+                balanceAfter: 2000.00
+            },
+            {
+                id: 2,
+                date: new Date('2023-10-18T14:45:00'),
+                type: 'withdrawal',
+                amount: 500.00,
+                balanceAfter: 1500.00
+            },
+            {
+                id: 3,
+                date: new Date('2023-10-20T11:20:00'),
+                type: 'deposit',
+                amount: 1000.00,
+                balanceAfter: 2500.00
+            },
+            {
+                id: 4,
+                date: new Date('2023-10-25T16:10:00'),
+                type: 'withdrawal',
+                amount: 300.00,
+                balanceAfter: 2200.00
+            },
+            {
+                id: 5,
+                date: new Date('2023-11-01T10:05:00'),
+                type: 'deposit',
+                amount: 3050.00,
+                balanceAfter: 5250.00
+            }
+        ];
+
+        // Current balance
+        let currentBalance = 5250.00;
+        let balanceVisible = true;
+
+        // DOM Elements
+        const withdrawalForm = document.getElementById('withdrawalForm');
+        const amountInput = document.getElementById('amount');
+        const amountError = document.getElementById('amountError');
+        const currentBalanceEl = document.getElementById('currentBalance');
+        const balanceToggle = document.getElementById('balanceToggle');
+        const lowBalanceWarning = document.getElementById('lowBalanceWarning');
+        const confirmWithdrawalBtn = document.getElementById('confirmWithdrawal');
+        const withdrawalSpinner = document.getElementById('withdrawalSpinner');
+        const successModal = document.getElementById('successModal');
+        const withdrawalAmountEl = document.getElementById('withdrawalAmount');
+        const transactionTableBody = document.getElementById('transactionTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const typeFilter = document.getElementById('typeFilter');
+        const sortFilter = document.getElementById('sortFilter');
+        const amountButtons = document.querySelectorAll('.amount-btn');
+
+        // Initialize the application
+        function init() {
+            // Set up event listeners
+            withdrawalForm.addEventListener('submit', handleWithdrawal);
+            amountInput.addEventListener('input', validateAmount);
+            balanceToggle.addEventListener('click', toggleBalanceVisibility);
+            typeFilter.addEventListener('change', filterTransactions);
+            sortFilter.addEventListener('change', filterTransactions);
+            
+            // Set up amount buttons
+            amountButtons.forEach(button => {
+                if (button.id !== 'customAmountBtn') {
+                    button.addEventListener('click', () => {
+                        const amount = button.getAttribute('data-amount');
+                        amountInput.value = amount;
+                        validateAmount();
+                        
+                        // Set active state
+                        amountButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                    });
+                }
+            });
+            
+            // Load transaction history
+            loadTransactions();
+        }
+
+        // Show/hide balance
+        function toggleBalanceVisibility() {
+            balanceVisible = !balanceVisible;
+            currentBalanceEl.textContent = balanceVisible ? formatCurrency(currentBalance) : '•••••';
+            balanceToggle.textContent = balanceVisible ? 'Hide' : 'Show';
+        }
+
+        // Validate withdrawal amount
+        function validateAmount() {
+            const amount = parseFloat(amountInput.value);
+            
+            // Reset error state
+            amountInput.classList.remove('error');
+            amountError.classList.remove('show');
+            lowBalanceWarning.classList.remove('show');
+            
+            // Check if amount is valid
+            if (isNaN(amount) || amount <= 0) {
+                amountInput.classList.add('error');
+                amountError.textContent = 'Please enter a valid amount greater than 0';
+                amountError.classList.add('show');
+                confirmWithdrawalBtn.disabled = true;
+                return false;
+            }
+            
+            // Check if amount exceeds balance
+            if (amount > currentBalance) {
+                lowBalanceWarning.classList.add('show');
+                confirmWithdrawalBtn.disabled = true;
+                return false;
+            }
+            
+            // Check minimum withdrawal amount
+            if (amount < 10) {
+                amountInput.classList.add('error');
+                amountError.textContent = 'Minimum withdrawal amount is R10';
+                amountError.classList.add('show');
+                confirmWithdrawalBtn.disabled = true;
+                return false;
+            }
+            
+            // Valid amount
+            confirmWithdrawalBtn.disabled = false;
+            return true;
+        }
+
+        // Handle withdrawal submission
+        function handleWithdrawal(e) {
+            e.preventDefault();
+            
+            if (!validateAmount()) return;
+            
+            const amount = parseFloat(amountInput.value);
+            
+            // Show loading state
+            confirmWithdrawalBtn.disabled = true;
+            withdrawalSpinner.style.display = 'inline-block';
+            withdrawalForm.classList.add('loading');
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Update balance
+                currentBalance -= amount;
+                currentBalanceEl.textContent = formatCurrency(currentBalance);
+                
+                // Add transaction to history
+                const newTransaction = {
+                    id: sampleTransactions.length + 1,
+                    date: new Date(),
+                    type: 'withdrawal',
+                    amount: amount,
+                    balanceAfter: currentBalance
+                };
+                
+                sampleTransactions.unshift(newTransaction);
+                loadTransactions();
+                
+                // Reset form
+                withdrawalForm.reset();
+                amountButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Hide loading state
+                confirmWithdrawalBtn.disabled = false;
+                withdrawalSpinner.style.display = 'none';
+                withdrawalForm.classList.remove('loading');
+                
+                // Show success modal
+                withdrawalAmountEl.textContent = formatCurrency(amount);
+                successModal.classList.add('show');
+            }, 1500);
+        }
+
+        // Close modal
+        function closeModal() {
+            successModal.classList.remove('show');
+        }
+
+        // Load transactions into the table
+        function loadTransactions() {
+            const typeFilterValue = typeFilter.value;
+            const sortFilterValue = sortFilter.value;
+            
+            // Filter transactions
+            let filteredTransactions = sampleTransactions;
+            if (typeFilterValue !== 'all') {
+                filteredTransactions = sampleTransactions.filter(
+                    transaction => transaction.type === typeFilterValue
+                );
+            }
+            
+            // Sort transactions
+            if (sortFilterValue === 'newest') {
+                filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else {
+                filteredTransactions.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+            
+            // Clear table
+            transactionTableBody.innerHTML = '';
+            
+            // Show empty state if no transactions
+            if (filteredTransactions.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            // Populate table
+            filteredTransactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                
+                // Format date
+                const date = new Date(transaction.date);
+                const formattedDate = date.toLocaleDateString('en-ZA');
+                const formattedTime = date.toLocaleTimeString('en-ZA', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                // Create cells
+                const dateCell = document.createElement('td');
+                dateCell.textContent = `${formattedDate} ${formattedTime}`;
+                
+                const typeCell = document.createElement('td');
+                const typeBadge = document.createElement('span');
+                typeBadge.className = `transaction-type ${transaction.type}`;
+                typeBadge.textContent = transaction.type === 'deposit' ? 'Deposit' : 'Withdrawal';
+                typeCell.appendChild(typeBadge);
+                
+                const amountCell = document.createElement('td');
+                amountCell.className = `transaction-amount ${transaction.type === 'deposit' ? 'positive' : 'negative'}`;
+                amountCell.textContent = `${transaction.type === 'deposit' ? '+' : '-'}R${formatCurrency(transaction.amount)}`;
+                
+                const balanceCell = document.createElement('td');
+                balanceCell.textContent = `R${formatCurrency(transaction.balanceAfter)}`;
+                
+                // Append cells to row
+                row.appendChild(dateCell);
+                row.appendChild(typeCell);
+                row.appendChild(amountCell);
+                row.appendChild(balanceCell);
+                
+                // Append row to table
+                transactionTableBody.appendChild(row);
+            });
+        }
+
+        // Filter transactions based on selected filters
+        function filterTransactions() {
+            loadTransactions();
+        }
+
+        // Format currency with thousands separators
+        function formatCurrency(amount) {
+            return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).style.display = 'block';
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (pageId === 'withdrawalPage') {
+                document.querySelectorAll('.nav-link')[0].classList.add('active');
+            } else if (pageId === 'transactionHistoryPage') {
+                document.querySelectorAll('.nav-link')[1].classList.add('active');
+                loadTransactions();
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
