@@ -199,7 +199,7 @@
         <label class="label" for="email">Email Address</label>
         <div class="input-with-icon">
           <span class="icon-left">✉️</span>
-          <input id="email" name="email" type="email" placeholder="your@email.com" required>
+          <input id="email" name="email" type="email" placeholder="your@email.com">
         </div>
       </div>
 
@@ -207,7 +207,7 @@
         <label class="label" for="password">Password</label>
         <div class="input-with-icon">
           <span class="icon-left">🔒</span>
-          <input id="password" name="password" type="password" placeholder="Enter your password" required>
+          <input id="password" name="password" type="password" placeholder="Enter your password">
           <button type="button" class="icon-right" id="togglePw">👁️</button>
         </div>
         <div class="forgot-password">
@@ -231,28 +231,32 @@
   </main>
 
   <script>
-    // LOGIN PAGE JS
+    // LOGIN PAGE JS - DEMO VERSION
     (function(){
       const form = document.getElementById('loginForm');
       const password = document.getElementById('password');
 
+      // Password toggle functionality
       document.getElementById('togglePw').onclick = () => {
         const hidden = password.type === 'password';
         password.type = hidden ? 'text' : 'password';
         togglePw.textContent = hidden ? '🙈' : '👁️';
       };
 
+      // Form submission - demo version (no validation)
       form.onsubmit = (e) => {
-        if (!form.email.value.includes("@")){
-          alert("Please enter a valid email");
-          e.preventDefault(); return;
-        }
-        if (password.value.length < 1){
-          alert("Please enter your password");
-          e.preventDefault(); return;
-        }
+        // Prevent actual form submission
+        e.preventDefault();
+        
+        // Show loading state
         document.getElementById('loginBtn').disabled = true;
         document.getElementById('loginBtn').textContent = "Signing in...";
+        
+        // Simulate API call/processing delay
+        setTimeout(() => {
+          // Redirect to dashboard after successful "login"
+          window.location.href = 'dashboard.html';
+        }, 1500);
       };
     })();
   </script>
