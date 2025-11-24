@@ -25,10 +25,15 @@
             font-family: 'Inter', Arial, sans-serif;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background: var(--light-bg);
             color: var(--text-dark);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         /* HEADER */
@@ -40,6 +45,11 @@
             align-items: center;
             border-bottom: 1px solid #e5e7eb;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
 
         .logo {
@@ -49,6 +59,7 @@
             font-size: 24px;
             font-weight: bold;
             color: var(--text-dark);
+            z-index: 1001;
         }
 
         .logo span {
@@ -107,14 +118,16 @@
             background: rgba(37, 99, 235, 0.05);
         }
 
-        /* HERO SECTION */
+        /* HERO SECTION - FULL VIEWPORT HEIGHT */
         .hero {
             display: flex;
             align-items: center;
-            padding: 60px 30px;
+            padding: 0 30px;
             max-width: 1200px;
             margin: 0 auto;
             gap: 50px;
+            min-height: 100vh;
+            margin-top: 80px; /* Account for fixed header */
         }
 
         .hero-content {
@@ -125,24 +138,39 @@
             flex: 1;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
-        .hero-image img {
-            max-width: 100%;
+        .hero-image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #4f46e5, #2563eb);
             border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
             box-shadow: var(--shadow);
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
             margin-bottom: 20px;
             line-height: 1.2;
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.3rem);
             color: var(--text-light);
             margin-bottom: 30px;
+            max-width: 90%;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         /* FEATURES SECTION */
@@ -157,12 +185,12 @@
         }
 
         .section-title h2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             margin-bottom: 15px;
         }
 
         .section-title p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.2rem);
             color: var(--text-light);
             max-width: 600px;
             margin: 0 auto;
@@ -267,12 +295,12 @@
         }
 
         .cta h2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             margin-bottom: 20px;
         }
 
         .cta p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2vw, 1.2rem);
             max-width: 600px;
             margin: 0 auto 30px;
             opacity: 0.9;
@@ -352,24 +380,120 @@
             color: #94a3b8;
         }
 
+        /* MOBILE MENU */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-dark);
+            z-index: 1001;
+        }
+
         /* RESPONSIVE DESIGN */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .hero {
-                flex-direction: column;
-                text-align: center;
+                gap: 40px;
             }
             
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: clamp(2.2rem, 4vw, 3.5rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+            
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 0 20px;
+                gap: 40px;
+                margin-top: 70px;
+            }
+            
+            .hero p {
+                max-width: 100%;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
             }
             
             .nav-links {
                 display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--white);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
             }
             
             .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-auth {
+                display: flex;
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
+                margin-top: 30px;
+            }
+            
+            .hero-image-placeholder {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 0 15px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+            }
+            
+            .features, .testimonials, .cta {
+                padding: 60px 15px;
+            }
+            
+            .feature-card, .testimonial-card {
+                padding: 20px;
+            }
+            
+            footer {
+                padding: 40px 15px 20px;
             }
         }
     </style>
@@ -382,7 +506,7 @@
             <span>🏦</span> SecureBank
         </div>
         
-        <nav class="nav-links">
+        <nav class="nav-links" id="navLinks">
             <a href="#features">Features</a>
             <a href="#testimonials">Testimonials</a>
             <a href="#about">About Us</a>
@@ -393,6 +517,8 @@
             <button class="btn btn-secondary" onclick="window.location.href='login.html'">Sign In</button>
             <button class="btn btn-primary" onclick="window.location.href='register.html'">Open Account</button>
         </div>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
     </header>
 
     <!-- HERO SECTION -->
@@ -400,14 +526,13 @@
         <div class="hero-content">
             <h1>Banking Made Simple, Secure, and Smart</h1>
             <p>Join millions who trust SecureBank for their financial needs. Experience next-generation banking with cutting-edge security, intuitive features, and 24/7 support.</p>
-            <div class="cta-buttons">
+            <div class="hero-buttons">
                 <button class="btn btn-primary" onclick="window.location.href='register.html'">Get Started Free</button>
                 <button class="btn btn-secondary">Learn More</button>
             </div>
         </div>
         <div class="hero-image">
-            <!-- Placeholder for banking illustration -->
-            <div style="width: 100%; height: 400px; background: linear-gradient(135deg, #4f46e5, #2563eb); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+            <div class="hero-image-placeholder">
                 Secure Banking Dashboard Preview
             </div>
         </div>
@@ -561,5 +686,43 @@
             <p>© 2025 SecureBank. All rights reserved. • Your money, secured your way.</p>
         </div>
     </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+        });
+        
+        // Close mobile menu when clicking on a link
+        const navLinksItems = document.querySelectorAll('.nav-links a');
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.textContent = '☰';
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
