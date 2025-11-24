@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updated Deposit Page</title>
+    <link rel="stylesheet" href="updated-deposit.css">
+</head>
+<body>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">Deposit Money</h2>
+                <button class="close-button" id="closeButton" aria-label="Close">×</button>
+            </div>
+            
+            <div class="modal-content">
+                <!-- Current Balance Section -->
+                <div class="balance-section">
+                    <div class="balance-box">
+                        <div class="balance-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4Z" fill="white"/>
+                                <path d="M4 8H20V10H4V8Z" fill="#2196F3" opacity="0.3"/>
+                                <text x="12" y="16.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">$</text>
+                            </svg>
+                        </div>
+                        <div class="balance-text">
+                            <div class="balance-label">Current Balance</div>
+                            <div class="balance-amount">R5,000.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Select Amount Section -->
+                <div class="quick-select-section">
+                    <label class="section-label">Quick Select Amount</label>
+                    <div class="quick-select-buttons">
+                        <button class="quick-select-btn" data-amount="50.00">R50.00</button>
+                        <button class="quick-select-btn" data-amount="100.00">R100.00</button>
+                        <button class="quick-select-btn" data-amount="500.00">R500.00</button>
+                        <button class="quick-select-btn custom-btn" id="customBtn">Custom</button>
+                    </div>
+                </div>
+
+                <!-- Enter Amount Section -->
+                <div class="enter-amount-section">
+                    <label class="section-label">Enter Amount</label>
+                    <input type="text" class="amount-input" id="amountInput" placeholder="R 0.00" />
+                </div>
+
+                <!-- Deposit Limits Section -->
+                <div class="deposit-limits-section">
+                    <div class="limit-row">
+                        <span class="limit-label">Minimum deposit:</span>
+                        <span class="limit-value">R10.00</span>
+                    </div>
+                    <div class="limit-row">
+                        <span class="limit-label">Maximum deposit:</span>
+                        <span class="limit-value">R10,000.00</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="cancel-btn" id="cancelBtn">Cancel</button>
+                    <button class="continue-btn" id="continueBtn">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="updated-deposit.js"></script>
+</body>
+</html>
+
