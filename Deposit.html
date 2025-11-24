@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Money</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .deposit-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .balance-display {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .amount-input-wrapper {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            font-weight: 600;
+            color: #4a5568;
+            z-index: 1;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 20px 20px 20px 50px;
+            font-size: 32px;
+            font-weight: 600;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-align: right;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .amount-input.error {
+            border-color: #e53e3e;
+            background: #fff5f5;
+        }
+
+        .amount-input.valid {
+            border-color: #48bb78;
+        }
+
+        .suggested-amounts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .amount-btn {
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .amount-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .amount-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .amount-btn.custom {
+            background: #f7fafc;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            animation: shake 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #cbd5e0;
+            background: #f7fafc;
+        }
+
+        .btn.loading {
+            pointer-events: none;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #48bb78;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleBounce 0.5s ease;
+        }
+
+        @keyframes scaleBounce {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 16px;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .modal-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #48bb78;
+            margin-bottom: 30px;
+        }
+
+        .modal-btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .confirmation-modal {
+            text-align: left;
+        }
+
+        .confirmation-modal .modal-title {
+            text-align: center;
+        }
+
+        .confirmation-details {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-row:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 2px solid #e2e8f0;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .confirmation-buttons .btn {
+            flex: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .deposit-container {
+                padding: 30px 20px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .amount-input {
+                font-size: 28px;
+                padding: 18px 18px 18px 45px;
+            }
+
+            .suggested-amounts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .deposit-container {
+                padding: 20px 15px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .amount-input {
+                font-size: 24px;
+                padding: 15px 15px 15px 40px;
+            }
+
+            .suggested-amounts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="deposit-container">
+        <h1 class="page-title">Deposit Money</h1>
+        
+        <div class="balance-display">
+            <div class="balance-label">Current Balance</div>
+            <div class="balance-amount" id="currentBalance">R0.00</div>
+        </div>
+
+        <form id="depositForm">
+            <div class="form-group">
+                <label class="form-label" for="amount">Deposit Amount</label>
+                <div class="amount-input-wrapper">
+                    <span class="currency-symbol">R</span>
+                    <input 
+                        type="text" 
+                        id="amount" 
+                        class="amount-input" 
+                        placeholder="0.00"
+                        autocomplete="off"
+                    >
+                </div>
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+
+            <div class="suggested-amounts">
+                <button type="button" class="amount-btn" data-amount="50">R50</button>
+                <button type="button" class="amount-btn" data-amount="100">R100</button>
+                <button type="button" class="amount-btn" data-amount="500">R500</button>
+                <button type="button" class="amount-btn custom" id="customBtn">Custom</button>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="confirmBtn">
+                    Confirm Deposit
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='./Dashboard.html';" id="cancelBtn">
+                    Back to Dashboard
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmationModal">
+        <div class="modal confirmation-modal">
+            <h2 class="modal-title">Confirm Deposit</h2>
+            <div class="confirmation-details">
+                <div class="confirmation-row">
+                    <span>Current Balance:</span>
+                    <span id="confirmCurrentBalance">R0.00</span>
+                </div>
+                <div class="confirmation-row">
+                    <span>Deposit Amount:</span>
+                    <span id="confirmDepositAmount">R0.00</span>
+                </div>
+                <div class="confirmation-row">
+                    <span>New Balance:</span>
+                    <span id="confirmNewBalance">R0.00</span>
+                </div>
+            </div>
+            <div class="confirmation-buttons">
+                <button type="button" class="btn btn-primary" id="proceedBtn">Proceed</button>
+                <button type="button" class="btn btn-secondary" id="cancelConfirmBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="success-icon"></div>
+            <h2 class="modal-title">Deposit Successful!</h2>
+            <p class="modal-message">Your funds have been added to your account</p>
+            <div class="modal-amount" id="successAmount">R0.00</div>
+            <button type="button" class="modal-btn" id="closeSuccessBtn">Done</button>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentBalance = 1250.50; // Example balance - in real app, fetch from API
+        let selectedAmount = null;
+        let isCustomMode = false;
+
+        // DOM elements
+        const amountInput = document.getElementById('amount');
+        const errorMessage = document.getElementById('errorMessage');
+        const currentBalanceDisplay = document.getElementById('currentBalance');
+        const depositForm = document.getElementById('depositForm');
+        const amountButtons = document.querySelectorAll('.amount-btn');
+        const customBtn = document.getElementById('customBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const successModal = document.getElementById('successModal');
+        const proceedBtn = document.getElementById('proceedBtn');
+        const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+
+        // Constants
+        const MAX_DEPOSIT = 10000;
+        const MIN_DEPOSIT = 0.01;
+
+        // Initialize
+        function init() {
+            updateBalanceDisplay();
+            setupEventListeners();
+        }
+
+        // Update balance display
+        function updateBalanceDisplay() {
+            currentBalanceDisplay.textContent = formatCurrency(currentBalance);
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return 'R' + amount.toLocaleString('en-ZA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Parse currency input
+        function parseAmount(value) {
+            // Remove currency symbols and spaces
+            const cleaned = value.replace(/[R\s,]/g, '');
+            const parsed = parseFloat(cleaned);
+            return isNaN(parsed) ? null : parsed;
+        }
+
+        // Validate amount
+        function validateAmount(amount) {
+            if (amount === null || amount === undefined) {
+                return { valid: false, message: 'Please enter a valid amount' };
+            }
+            if (amount <= MIN_DEPOSIT) {
+                return { valid: false, message: `Amount must be greater than R${MIN_DEPOSIT.toFixed(2)}` };
+            }
+            if (amount > MAX_DEPOSIT) {
+                return { valid: false, message: `Maximum deposit limit is R${MAX_DEPOSIT.toLocaleString('en-ZA')} per transaction` };
+            }
+            return { valid: true, message: '' };
+        }
+
+        // Show error
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            amountInput.classList.add('error');
+            amountInput.classList.remove('valid');
+        }
+
+        // Clear error
+        function clearError() {
+            errorMessage.classList.remove('show');
+            amountInput.classList.remove('error');
+        }
+
+        // Show valid state
+        function showValid() {
+            amountInput.classList.add('valid');
+            amountInput.classList.remove('error');
+            clearError();
+        }
+
+        // Real-time validation
+        function handleInputChange() {
+            const value = amountInput.value;
+            if (!value || value.trim() === '') {
+                clearError();
+                amountInput.classList.remove('valid', 'error');
+                return;
+            }
+
+            const amount = parseAmount(value);
+            const validation = validateAmount(amount);
+
+            if (!validation.valid) {
+                showError(validation.message);
+            } else {
+                showValid();
+                // Format the input
+                if (amount !== null) {
+                    const formatted = amount.toLocaleString('en-ZA', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    // Only update if the formatted value is different to avoid cursor jumping
+                    if (value.replace(/[R\s,]/g, '') !== formatted.replace(/[R\s,]/g, '')) {
+                        const cursorPos = amountInput.selectionStart;
+                        amountInput.value = formatted;
+                        // Try to maintain cursor position
+                        setTimeout(() => {
+                            amountInput.setSelectionRange(cursorPos, cursorPos);
+                        }, 0);
+                    }
+                }
+            }
+        }
+
+        // Handle amount button click
+        function handleAmountButtonClick(button) {
+            // Remove active state from all buttons
+            amountButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active state to clicked button
+            button.classList.add('active');
+            
+            const amount = parseFloat(button.dataset.amount);
+            if (amount) {
+                selectedAmount = amount;
+                isCustomMode = false;
+                amountInput.value = amount.toLocaleString('en-ZA', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                showValid();
+                clearError();
+            } else if (button.id === 'customBtn') {
+                isCustomMode = true;
+                selectedAmount = null;
+                amountInput.value = '';
+                amountInput.focus();
+                clearError();
+            }
+        }
+
+        // Get current input amount
+        function getCurrentAmount() {
+            const value = amountInput.value;
+            if (!value || value.trim() === '') {
+                return null;
+            }
+            return parseAmount(value);
+        }
+
+        // Show confirmation modal
+        function showConfirmationModal(amount) {
+            const newBalance = currentBalance + amount;
+            document.getElementById('confirmCurrentBalance').textContent = formatCurrency(currentBalance);
+            document.getElementById('confirmDepositAmount').textContent = formatCurrency(amount);
+            document.getElementById('confirmNewBalance').textContent = formatCurrency(newBalance);
+            confirmationModal.classList.add('show');
+        }
+
+        // Hide confirmation modal
+        function hideConfirmationModal() {
+            confirmationModal.classList.remove('show');
+        }
+
+        // Show success modal
+        function showSuccessModal(amount) {
+            document.getElementById('successAmount').textContent = formatCurrency(amount);
+            successModal.classList.add('show');
+        }
+
+        // Hide success modal
+        function hideSuccessModal() {
+            successModal.classList.remove('show');
+        }
+
+        // Process deposit
+        async function processDeposit(amount) {
+            // Show loading state
+            confirmBtn.classList.add('loading');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Processing...';
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Update balance
+            currentBalance += amount;
+            updateBalanceDisplay();
+
+            // Hide confirmation modal
+            hideConfirmationModal();
+
+            // Show success modal
+            showSuccessModal(amount);
+
+            // Reset form
+            resetForm();
+
+            // Remove loading state
+            confirmBtn.classList.remove('loading');
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Deposit';
+        }
+
+        // Reset form
+        function resetForm() {
+            amountInput.value = '';
+            amountButtons.forEach(btn => btn.classList.remove('active'));
+            clearError();
+            selectedAmount = null;
+            isCustomMode = false;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Amount input events
+            amountInput.addEventListener('input', handleInputChange);
+            amountInput.addEventListener('blur', function() {
+                const amount = getCurrentAmount();
+                if (amount !== null && validateAmount(amount).valid) {
+                    amountInput.value = amount.toLocaleString('en-ZA', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
+            });
+
+            // Prevent non-numeric input (except decimal point and formatting)
+            amountInput.addEventListener('keydown', function(e) {
+                // Allow: backspace, delete, tab, escape, enter, decimal point
+                if ([46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Amount button clicks
+            amountButtons.forEach(button => {
+                button.addEventListener('click', () => handleAmountButtonClick(button));
+            });
+
+            // Form submission
+            depositForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const amount = getCurrentAmount();
+                const validation = validateAmount(amount);
+
+                if (!validation.valid) {
+                    showError(validation.message);
+                    return;
+                }
+
+                showConfirmationModal(amount);
+            });
+
+            // Cancel button
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to cancel? Any entered amount will be lost.')) {
+                    resetForm();
+                    // In a real app, navigate to dashboard
+                    console.log('Navigate to dashboard');
+                }
+            });
+
+            // Confirmation modal buttons
+            proceedBtn.addEventListener('click', function() {
+                const amount = getCurrentAmount();
+                if (amount !== null) {
+                    processDeposit(amount);
+                }
+            });
+
+            cancelConfirmBtn.addEventListener('click', hideConfirmationModal);
+
+            // Success modal button
+            closeSuccessBtn.addEventListener('click', function() {
+                hideSuccessModal();
+                // In a real app, optionally navigate to dashboard
+                console.log('Navigate to dashboard');
+            });
+
+            // Close modals on overlay click
+            confirmationModal.addEventListener('click', function(e) {
+                if (e.target === confirmationModal) {
+                    hideConfirmationModal();
+                }
+            });
+
+            successModal.addEventListener('click', function(e) {
+                if (e.target === successModal) {
+                    hideSuccessModal();
+                }
+            });
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

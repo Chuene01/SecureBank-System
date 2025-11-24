@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,7 +8,7 @@
 
   <!-- 🔵 EMBEDDED BLUE THEME CSS -->
   <style>
-    :root{
+    :root {
       --bg-1: #eef6ff;
       --card: #ffffff;
       --primary: #2563eb;
@@ -15,146 +16,162 @@
       --muted: #6b7280;
       --accent: #10b981;
       --card-radius: 14px;
-      --shadow: 0 10px 30px rgba(37,99,235,0.08);
+      --shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
       --max-width: 460px;
       font-family: "Inter", "Segoe UI", system-ui, -apple-system, Arial;
     }
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
       background: linear-gradient(180deg, #f5fbff, var(--bg-1));
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:24px;
-      color:#0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      color: #0f172a;
     }
 
-    .card{
-      width:100%;
-      max-width:var(--max-width);
-      background:var(--card);
-      border-radius:var(--card-radius);
-      box-shadow:var(--shadow);
-      padding:26px;
-      border:1px solid rgba(15,23,42,0.05);
+    .card {
+      width: 100%;
+      max-width: var(--max-width);
+      background: var(--card);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+      border: 1px solid rgba(15, 23, 42, 0.05);
     }
 
-    .logo{
-      width:72px;height:72px;object-fit:cover;
-      border-radius:14px;
-      box-shadow:0 8px 18px rgba(37,99,235,0.12);
+    .logo {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
     }
 
-    .h1{
-      font-size:22px;
-      font-weight:700;
-      margin:0;
-    }
-    .h-sub{
-      font-size:14px;
-      color:var(--muted);
-      margin-top:4px;
+    .h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
     }
 
-    .badge-secure{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      background:#ecfdf5;
-      color:#065f46;
-      border-radius:20px;
-      font-size:13px;
-      border:1px solid rgba(6,95,70,0.1);
+    .h-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
-    .form{
-      display:grid;
-      gap:16px;
+    .badge-secure {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: #ecfdf5;
+      color: #065f46;
+      border-radius: 20px;
+      font-size: 13px;
+      border: 1px solid rgba(6, 95, 70, 0.1);
     }
 
-    .field{display:flex;flex-direction:column;gap:6px}
-    .label{
-      font-size:14px;
-      font-weight:600;
-      color:#0f172a;
+    .form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
     }
 
     /* INPUT + ICON */
-    .input-with-icon{
-      position:relative;
-      display:flex;
-      align-items:center;
-    }
-    .icon-left{
-      position:absolute;
-      left:12px;
-      font-size:18px;
-      color:#94a3b8;
-    }
-    .icon-right{
-      position:absolute;
-      right:10px;
-      background:none;
-      border:0;
-      font-size:18px;
-      cursor:pointer;
-      color:#64748b;
+    .input-with-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    input{
-      width:100%;
-      padding:12px 44px;
-      border-radius:10px;
-      border:1px solid #e6eefc;
-      background:#f7f9ff;
-      font-size:15px;
-      color:#0f172a;
-    }
-    input:focus{
-      outline:none;
-      border-color:var(--primary);
-      box-shadow:0 4px 14px rgba(37,99,235,0.18);
+    .icon-left {
+      position: absolute;
+      left: 12px;
+      font-size: 18px;
+      color: #94a3b8;
     }
 
-    .btn{
-      width:100%;
-      padding:12px;
-      font-size:16px;
-      font-weight:700;
-      border-radius:10px;
-      cursor:pointer;
-      border:0;
-    }
-    .btn-primary{
-      background:var(--primary);
-      color:white;
-      box-shadow:0 8px 20px rgba(37,99,235,0.2);
-    }
-    .btn-primary:hover{
-      background:var(--primary-dark);
+    .icon-right {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: 0;
+      font-size: 18px;
+      cursor: pointer;
+      color: #64748b;
     }
 
-    .btn-ghost{
-      background:transparent;
-      color:var(--primary);
-      border:2px solid rgba(37,99,235,0.15);
+    input {
+      width: 100%;
+      padding: 12px 44px;
+      border-radius: 10px;
+      border: 1px solid #e6eefc;
+      background: #f7f9ff;
+      font-size: 15px;
+      color: #0f172a;
     }
 
-    .helper{
-      text-align:center;
-      font-size:13px;
-      color:var(--muted);
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
     }
 
-    .footer-note{
-      margin-top:14px;
-      text-align:center;
-      font-size:13px;
-      color:var(--muted);
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 0;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid rgba(37, 99, 235, 0.15);
+    }
+
+    .helper {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
     }
   </style>
 </head>
@@ -200,7 +217,8 @@
         <label class="label" for="pwd1">Password</label>
         <div class="input-with-icon">
           <span class="icon-left">🔒</span>
-          <input id="pwd1" name="password" type="password" placeholder="Create a strong password" required minlength="6">
+          <input id="pwd1" name="password" type="password" placeholder="Create a strong password" required
+            minlength="6">
           <button type="button" class="icon-right" id="toggleRegPw1">👁️</button>
         </div>
       </div>
@@ -215,11 +233,12 @@
       </div>
 
       <button type="submit" class="btn btn-primary" id="createBtn">Create Account</button>
-      <button type="button" class="btn btn-ghost" onclick="location.href='login.html'">Already have an account? Sign in</button>
+      <button type="button" class="btn btn-ghost" onclick="location.href='Login.html'">Already have an account? Sign
+        in</button>
 
       <div class="helper">
-        By creating an account, you agree to SecureBank’s  
-        <a href="#" style="color:var(--primary)">Terms</a> &  
+        By creating an account, you agree to SecureBank’s
+        <a href="#" style="color:var(--primary)">Terms</a> &
         <a href="#" style="color:var(--primary)">Privacy Policy</a>.
       </div>
 
@@ -231,7 +250,7 @@
 
   <script>
     // REGISTER PAGE JS
-    (function(){
+    (function () {
       const form = document.getElementById('regForm');
       const pwd1 = document.getElementById('pwd1');
       const pwd2 = document.getElementById('pwd2');
@@ -249,19 +268,19 @@
       };
 
       form.onsubmit = (e) => {
-        if (!form.username.value.trim()){
+        if (!form.username.value.trim()) {
           alert("Please choose a username");
           e.preventDefault(); return;
         }
-        if (!form.email.value.includes("@")){
+        if (!form.email.value.includes("@")) {
           alert("Please enter a valid email");
           e.preventDefault(); return;
         }
-        if (pwd1.value.length < 6){
+        if (pwd1.value.length < 6) {
           alert("Password must be at least 6 characters");
           e.preventDefault(); return;
         }
-        if (pwd1.value !== pwd2.value){
+        if (pwd1.value !== pwd2.value) {
           alert("Passwords do not match");
           e.preventDefault(); return;
         }
@@ -272,4 +291,5 @@
   </script>
 
 </body>
+
 </html>

@@ -1,269 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transaction History | Secure Bank</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History | Secure Bank</title>
 
-<style>
-    :root {
-        --primary: #4a3aff;
-        --primary-light: #6358ff;
-        --bg: #f7f9fc;
-        --text-dark: #1f1f1f;
-        --border: #dce1eb;
-        --success: #19c37d;
-        --radius: 12px;
-        --shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-
-    body {
-        margin: 0;
-        background: var(--bg);
-        font-family: "Segoe UI", sans-serif;
-        color: var(--text-dark);
-    }
-
-    /* TOP HEADER */
-    .header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 20px;
-        font-size: 18px;
-        font-weight: 600;
-        background: white;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .back-btn {
-        padding: 10px 18px;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-        cursor: pointer;
-        background: #fff;
-        transition: 0.2s;
-    }
-
-    .back-btn:hover {
-        background: #f1f1f1;
-    }
-
-    /* SUMMARY CARDS */
-    .summary {
-        background: var(--primary);
-        color: white;
-        padding: 25px;
-        display: flex;
-        justify-content: space-between;
-        border-bottom-left-radius: var(--radius);
-        border-bottom-right-radius: var(--radius);
-    }
-
-    .summary-item {
-        text-align: center;
-    }
-    .summary-title {
-        opacity: 0.8;
-        font-size: 15px;
-    }
-    .summary-value {
-        margin-top: 6px;
-        font-size: 22px;
-        font-weight: 600;
-    }
-
-    /* FILTER BOX */
-    .filter-box {
-        background: white;
-        margin: 25px;
-        padding: 20px;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-    }
-    .filter-heading {
-        font-size: 17px;
-        font-weight: 600;
-        margin-bottom: 15px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .filter-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 15px;
-        margin-top: 10px;
-    }
-
-    select, input[type="date"] {
-        width: 100%;
-        padding: 10px;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-        font-size: 15px;
-    }
-
-    .clear-btn {
-        color: var(--primary);
-        cursor: pointer;
-        font-weight: 600;
-    }
-    .clear-btn:hover {
-        text-decoration: underline;
-    }
-
-    /* TRANSACTION TABLE */
-    .transactions {
-        background: white;
-        margin: 25px;
-        padding: 20px;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th {
-        text-align: left;
-        padding: 10px 5px;
-        border-bottom: 1px solid var(--border);
-        font-size: 14px;
-        opacity: 0.7;
-    }
-
-    td {
-        padding: 15px 5px;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 15px;
-    }
-
-    .deposit-tag {
-        background: var(--success);
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        color: white;
-        font-weight: 600;
-    }
-
-    .amount-positive {
-        color: var(--success);
-        font-weight: 600;
-    }
-
-    @media(max-width: 600px) {
-        .summary {
-            flex-direction: column;
-            text-align: center;
-            gap: 20px;
+    <style>
+        :root {
+            --primary: #4a3aff;
+            --primary-light: #6358ff;
+            --bg: #f7f9fc;
+            --text-dark: #1f1f1f;
+            --border: #dce1eb;
+            --success: #19c37d;
+            --radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         }
-    }
 
-</style>
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: "Segoe UI", sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* TOP HEADER */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn {
+            padding: 10px 18px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            background: #fff;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #f1f1f1;
+        }
+
+        /* SUMMARY CARDS */
+        .summary {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom-left-radius: var(--radius);
+            border-bottom-right-radius: var(--radius);
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-title {
+            opacity: 0.8;
+            font-size: 15px;
+        }
+
+        .summary-value {
+            margin-top: 6px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        /* FILTER BOX */
+        .filter-box {
+            background: white;
+            margin: 25px;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-heading {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        select,
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            font-size: 15px;
+        }
+
+        .clear-btn {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .clear-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* TRANSACTION TABLE */
+        .transactions {
+            background: white;
+            margin: 25px;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        td {
+            padding: 15px 5px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 15px;
+        }
+
+        .deposit-tag {
+            background: var(--success);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .amount-positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        @media(max-width: 600px) {
+            .summary {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- HEADER -->
-<div class="header">
-    <button class="back-btn">← Back to Dashboard</button>
-    Transaction History
-</div>
-
-<!-- SUMMARY SECTION -->
-<div class="summary">
-    <div class="summary-item">
-        <div class="summary-title">Current Balance</div>
-        <div class="summary-value" id="balance">R5,000.00</div>
+    <!-- HEADER -->
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='./Dashboard.html';">← Back to Dashboard</button>
+        Transaction History
     </div>
-    <div class="summary-item">
-        <div class="summary-title">Total Transactions</div>
-        <div class="summary-value" id="total-transactions">2</div>
+
+    <!-- SUMMARY SECTION -->
+    <div class="summary">
+        <div class="summary-item">
+            <div class="summary-title">Current Balance</div>
+            <div class="summary-value" id="balance">R5,000.00</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-title">Total Transactions</div>
+            <div class="summary-value" id="total-transactions">2</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-title">Showing</div>
+            <div class="summary-value" id="showing-count">2 of 2</div>
+        </div>
     </div>
-    <div class="summary-item">
-        <div class="summary-title">Showing</div>
-        <div class="summary-value" id="showing-count">2 of 2</div>
+
+    <!-- FILTERS -->
+    <div class="filter-box">
+        <div class="filter-heading">
+            <span>Filter & Sort</span>
+            <span class="clear-btn" onclick="clearFilters()">Clear All</span>
+        </div>
+        <div>
+
+        </div>
+        <div class="filter-row">
+
+            <select id="type-filter" onchange="applyFilters()">
+                <option value="all">All Transactions</option>
+                <option value="deposit">Deposit</option>
+                <option value="withdrawal">Withdrawal</option>
+            </select>
+
+            <select id="sort-filter" onchange="applyFilters()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+
+            <input type="date" id="from-date" onchange="applyFilters()">
+            <input type="date" id="to-date" onchange="applyFilters()">
+        </div>
     </div>
-</div>
 
-<!-- FILTERS -->
-<div class="filter-box">
-    <div class="filter-heading">
-        <span>Filter & Sort</span>
-        <span class="clear-btn" onclick="clearFilters()">Clear All</span>
+    <!-- TRANSACTION TABLE -->
+    <div class="transactions">
+        <h3>Transactions</h3>
+        <p id="showing-text">Showing 2 of 2 transactions</p>
+
+        <table id="transaction-table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Balance After</th>
+                    <th>Transaction ID</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
     </div>
-    <div>
-        
-    </div>
-    <div class="filter-row">
-        
-        <select id="type-filter" onchange="applyFilters()">
-            <option value="all">All Transactions</option>
-            <option value="deposit">Deposit</option>
-            <option value="withdrawal">Withdrawal</option>
-        </select>
 
-        <select id="sort-filter" onchange="applyFilters()">
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-        </select>
+    <script>
+        const transactions = [
+            {
+                date: "2025-11-16T02:00",
+                description: "Salary credit",
+                type: "deposit",
+                amount: 3000,
+                balance: 5000,
+                id: "#2"
+            },
+            {
+                date: "2025-11-10T14:30",
+                description: "Initial deposit",
+                type: "deposit",
+                amount: 2000,
+                balance: 2000,
+                id: "#1"
+            }
+        ];
 
-        <input type="date" id="from-date" onchange="applyFilters()">
-        <input type="date" id="to-date" onchange="applyFilters()">
-    </div>
-</div>
+        function renderTable(list) {
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
 
-<!-- TRANSACTION TABLE -->
-<div class="transactions">
-    <h3>Transactions</h3>
-    <p id="showing-text">Showing 2 of 2 transactions</p>
+            list.forEach(t => {
+                const tr = document.createElement("tr");
 
-    <table id="transaction-table">
-        <thead>
-        <tr>
-            <th>Date & Time</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Balance After</th>
-            <th>Transaction ID</th>
-        </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-    </table>
-</div>
-
-<script>
-const transactions = [
-    {
-        date: "2025-11-16T02:00",
-        description: "Salary credit",
-        type: "deposit",
-        amount: 3000,
-        balance: 5000,
-        id: "#2"
-    },
-    {
-        date: "2025-11-10T14:30",
-        description: "Initial deposit",
-        type: "deposit",
-        amount: 2000,
-        balance: 2000,
-        id: "#1"
-    }
-];
-
-function renderTable(list) {
-    const tbody = document.getElementById("tbody");
-    tbody.innerHTML = "";
-
-    list.forEach(t => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
+                tr.innerHTML = `
             <td>${new Date(t.date).toLocaleDateString()}<br><span style="opacity:0.7">${new Date(t.date).toLocaleTimeString()}</span></td>
             <td><span class="deposit-tag">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td>
             <td>${t.description}</td>
@@ -272,56 +278,57 @@ function renderTable(list) {
             <td>${t.id}</td>
         `;
 
-        tbody.appendChild(tr);
-    });
+                tbody.appendChild(tr);
+            });
 
-    document.getElementById("showing-text").innerText =
-        `Showing ${list.length} of ${transactions.length} transactions`;
+            document.getElementById("showing-text").innerText =
+                `Showing ${list.length} of ${transactions.length} transactions`;
 
-    document.getElementById("showing-count").innerText =
-        `${list.length} of ${transactions.length}`;
-}
+            document.getElementById("showing-count").innerText =
+                `${list.length} of ${transactions.length}`;
+        }
 
-function applyFilters() {
-    let list = [...transactions];
+        function applyFilters() {
+            let list = [...transactions];
 
-    const type = document.getElementById("type-filter").value;
-    const sort = document.getElementById("sort-filter").value;
-    const fromDate = document.getElementById("from-date").value;
-    const toDate = document.getElementById("to-date").value;
+            const type = document.getElementById("type-filter").value;
+            const sort = document.getElementById("sort-filter").value;
+            const fromDate = document.getElementById("from-date").value;
+            const toDate = document.getElementById("to-date").value;
 
-    if (type !== "all") {
-        list = list.filter(t => t.type === type);
-    }
+            if (type !== "all") {
+                list = list.filter(t => t.type === type);
+            }
 
-    if (fromDate) {
-        list = list.filter(t => new Date(t.date) >= new Date(fromDate));
-    }
+            if (fromDate) {
+                list = list.filter(t => new Date(t.date) >= new Date(fromDate));
+            }
 
-    if (toDate) {
-        list = list.filter(t => new Date(t.date) <= new Date(toDate));
-    }
+            if (toDate) {
+                list = list.filter(t => new Date(t.date) <= new Date(toDate));
+            }
 
-    if (sort === "newest") {
-        list.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else {
-        list.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
+            if (sort === "newest") {
+                list.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else {
+                list.sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
 
-    renderTable(list);
-}
+            renderTable(list);
+        }
 
-function clearFilters() {
-    document.getElementById("type-filter").value = "all";
-    document.getElementById("sort-filter").value = "newest";
-    document.getElementById("from-date").value = "";
-    document.getElementById("to-date").value = "";
+        function clearFilters() {
+            document.getElementById("type-filter").value = "all";
+            document.getElementById("sort-filter").value = "newest";
+            document.getElementById("from-date").value = "";
+            document.getElementById("to-date").value = "";
 
-    renderTable(transactions);
-}
+            renderTable(transactions);
+        }
 
-renderTable(transactions);
-</script>
+        renderTable(transactions);
+    </script>
 
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login | Secure Bank</title>
+  <title>SecureBank — Login to Your Account</title>
 
   <!-- 🔵 EMBEDDED BLUE THEME CSS -->
   <style>
@@ -156,37 +156,44 @@
       font-size:13px;
       color:var(--muted);
     }
+    
+    .forgot-password {
+      text-align: right;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    
+    .forgot-password a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
 <body>
 
-  <main class="card" role="main" aria-labelledby="registerTitle">
+  <main class="card" role="main" aria-labelledby="loginTitle">
 
     <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:10px">
-      <!-- REGISTER LOGO IMAGE -->
+      <!-- LOGIN LOGO IMAGE -->
       <img src="/mnt/data/WhatsApp Image 2025-11-21 at 15.22.55.jpeg" class="logo" alt="">
       <div style="font-weight:700;font-size:18px;margin-top:6px">SecureBank</div>
-      <div style="color:#64748b;font-size:14px">Join SecureBank today</div>
+      <div style="color:#64748b;font-size:14px">Welcome back</div>
     </div>
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div>
-        <h2 id="registerTitle" class="h1">Create Account</h2>
-        <div class="h-sub">Join SecureBank today</div>
+        <h2 id="loginTitle" class="h1">Sign In</h2>
+        <div class="h-sub">Access your SecureBank account</div>
       </div>
       <div class="badge-secure">🔒 Secure</div>
     </div>
 
-    <form id="regForm" class="form" action="/register" method="post">
-
-      <div class="field">
-        <label class="label" for="uname">Username</label>
-        <div class="input-with-icon">
-          <span class="icon-left">👤</span>
-          <input id="uname" name="username" type="text" placeholder="Choose a username" required>
-        </div>
-      </div>
+    <form id="loginForm" class="form" action="/login" method="post">
 
       <div class="field">
         <label class="label" for="email">Email Address</label>
@@ -197,28 +204,22 @@
       </div>
 
       <div class="field">
-        <label class="label" for="pwd1">Password</label>
+        <label class="label" for="password">Password</label>
         <div class="input-with-icon">
           <span class="icon-left">🔒</span>
-          <input id="pwd1" name="password" type="password" placeholder="Create a strong password" required minlength="6">
-          <button type="button" class="icon-right" id="toggleRegPw1">👁️</button>
+          <input id="password" name="password" type="password" placeholder="Enter your password" required>
+          <button type="button" class="icon-right" id="togglePw">👁️</button>
+        </div>
+        <div class="forgot-password">
+          <a href="forgot-password.html">Forgot password?</a>
         </div>
       </div>
 
-      <div class="field">
-        <label class="label" for="pwd2">Confirm Password</label>
-        <div class="input-with-icon">
-          <span class="icon-left">🔒</span>
-          <input id="pwd2" name="confirm" type="password" placeholder="Confirm your password" required minlength="6">
-          <button type="button" class="icon-right" id="toggleRegPw2">👁️</button>
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary" id="createBtn">Create Account</button>
-      <button type="button" class="btn btn-ghost" onclick="location.href='login.html'">Already have an account? Sign in</button>
+      <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
+      <button type="button" class="btn btn-ghost" onclick="location.href='register.html'">Don't have an account? Create one</button>
 
       <div class="helper">
-        By creating an account, you agree to SecureBank’s  
+        By signing in, you agree to SecureBank's  
         <a href="#" style="color:var(--primary)">Terms</a> &  
         <a href="#" style="color:var(--primary)">Privacy Policy</a>.
       </div>
@@ -230,44 +231,28 @@
   </main>
 
   <script>
-    // REGISTER PAGE JS
+    // LOGIN PAGE JS
     (function(){
-      const form = document.getElementById('regForm');
-      const pwd1 = document.getElementById('pwd1');
-      const pwd2 = document.getElementById('pwd2');
+      const form = document.getElementById('loginForm');
+      const password = document.getElementById('password');
 
-      document.getElementById('toggleRegPw1').onclick = () => {
-        const hidden = pwd1.type === 'password';
-        pwd1.type = hidden ? 'text' : 'password';
-        toggleRegPw1.textContent = hidden ? '🙈' : '👁️';
-      };
-
-      document.getElementById('toggleRegPw2').onclick = () => {
-        const hidden = pwd2.type === 'password';
-        pwd2.type = hidden ? 'text' : 'password';
-        toggleRegPw2.textContent = hidden ? '🙈' : '👁️';
+      document.getElementById('togglePw').onclick = () => {
+        const hidden = password.type === 'password';
+        password.type = hidden ? 'text' : 'password';
+        togglePw.textContent = hidden ? '🙈' : '👁️';
       };
 
       form.onsubmit = (e) => {
-        if (!form.username.value.trim()){
-          alert("Please choose a username");
-          e.preventDefault(); return;
-        }
         if (!form.email.value.includes("@")){
           alert("Please enter a valid email");
           e.preventDefault(); return;
         }
-        if (pwd1.value.length < 6){
-          alert("Password must be at least 6 characters");
+        if (password.value.length < 1){
+          alert("Please enter your password");
           e.preventDefault(); return;
         }
-        if (pwd1.value !== pwd2.value){
-            
-          alert("Passwords do not match");
-          e.preventDefault(); return;
-        }
-        document.getElementById('createBtn').disabled = true;
-        document.getElementById('createBtn').textContent = "Creating...";
+        document.getElementById('loginBtn').disabled = true;
+        document.getElementById('loginBtn').textContent = "Signing in...";
       };
     })();
   </script>
