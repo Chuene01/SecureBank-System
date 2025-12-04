@@ -1,229 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Secure Bank</title>
+    <title>SecureBank Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef3ff;
+}
+
+/* HEADER */
+header {
+    background: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #d9dce0;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #0a2351;
+}
+
+.subtext {
+    font-size: 13px;
+    color: gray;
+    margin-top: -5px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.small-gray {
+    font-size: 12px;
+    color: gray;
+}
+
+.profile-circle {
+    background: #1e40af;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.logout-btn {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    cursor: pointer;
+}
+
+/* PAGE WRAPPER */
+.page-wrapper {
+    padding: 30px;
+}
+
+/* BALANCE CARD */
+.balance-card {
+    background: linear-gradient(to right, #4f46e5, #2563eb);
+    color: white;
+    padding: 35px;
+    border-radius: 20px;
+    font-size: 1.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-title {
+    opacity: 0.85;
+}
+
+.balance-amount {
+    font-size: 3rem;
+    margin: 5px 0;
+}
+
+.account-label {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.eye-icon {
+    font-size: 28px;
+    opacity: 0.8;
+}
+
+/* QUICK ACTIONS */
+.quick-actions {
+    display: flex;
+    margin: 25px 0;
+    gap: 25px;
+}
+
+.action-card {
+    flex: 1;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+    font-size: 26px;
+    padding: 15px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.green { background: #d1fadf; }
+.blue  { background: #dbeafe; }
+.purple { background: #ede9fe; }
+
+.action-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.action-desc {
+    color: gray;
+    margin-top: -5px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.viewall-btn {
+    padding: 8px 18px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.type-badge {
+    background: #22c55e;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 12px;
+}
+
+.green-text {
+    color: #16a34a;
+}
+
+/* TAGS */
+.tag {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.blue-tag { background: #dbeafe; color: #2563eb; }
+.green-tag { background: #dcfce7; color: #15803d; }
+
+</style>
 </head>
 
 <body>
 
-    <header>
-        <!-- LEFT SECTION -->
-        <div class="logo">
-            <span>🏦</span> SecureBank
-        </div>
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <span class="bank-icon">🏦</span> SecureBank
+        <p class="subtext">Online Banking</p>
+    </div>
 
-        <!-- RIGHT SECTION -->
-        <div class="header-right">
+    <div class="header-right">
+        <div class="profile-info">
             <div class="profile-circle">DE</div>
-            <a href="login.html"><button class="logout-btn">Logout</button></a>
-        </div>
-    </header>
-
-    <div class="container">
-
-        <!-- BALANCE DISPLAY -->
-        <div class="balance-card">
-            <h3>Available Balance</h3>
-            <p><strong>R5000.00</strong></p>
-
-            <!-- ACTION BUTTONS BELOW BALANCE -->
-            <div class="actions">
-                <button class="action-btn" onclick="window.location.href='./Deposit.html';">
-                    ⬆ Deposit
-                </button>
-
-                <button class="action-btn" onclick="window.location.href='./Withdraw.html';">
-                    ⬆ Withdraw
-                </button>
-
+            <div>
+                <strong>demo</strong><br>
+                <span class="small-gray">Personal Account</span>
             </div>
         </div>
+        <button class="logout-btn">Logout</button>
+    </div>
+</header>
 
-        <!-- TRANSACTION SECTION -->
-        <div class="transaction-panel">
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
 
-            <div class="transaction-header">
-                <h3>Transaction History</h3>
-                <button>View All ➜</button>
+    <!-- BALANCE CARD -->
+    <div class="balance-card">
+        <div>
+            <p class="balance-title">Available Balance</p>
+            <p class="balance-amount">R5,000.00</p>
+            <p class="account-label">Account: •••• •••• demo</p>
+        </div>
+
+        <span class="eye-icon">👁️</span>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+        <div class="action-card">
+            <div class="action-icon green">⬇</div>
+            <p class="action-title">Deposit Money</p>
+            <p class="action-desc">Add funds to your account</p>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon blue">⬆</div>
+            <p class="action-title">Withdraw Money</p>
+            <p class="action-desc">Make a cash withdrawal</p>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon purple">⟳</div>
+            <p class="action-title">Transaction History</p>
+            <p class="action-desc">View all transactions</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT GRID -->
+    <div class="grid">
+
+        <!-- RECENT TRANSACTIONS -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Transactions</h3>
+                <button class="viewall-btn">View All ➜</button>
             </div>
+            <p class="gray">Your latest account activity</p>
 
-            <p style="color: gray; margin-top: -5px;">Recent account activity</p>
-
-            <!-- TABLE -->
             <table>
                 <tr>
                     <th>Date</th>
                     <th>Type</th>
                     <th>Description</th>
+                    <th>Amount</th>
                 </tr>
 
                 <tr>
-                    <td>Nov 15, 2025 @ 02:00 AM</td>
+                    <td>Nov 15, 2025, 02:00 AM</td>
                     <td><span class="type-badge">deposit</span></td>
                     <td>Initial deposit</td>
+                    <td class="green-text">+R2,000.00</td>
                 </tr>
 
                 <tr>
-                    <td>Nov 16, 2025 @ 02:00 AM</td>
+                    <td>Nov 16, 2025, 02:00 AM</td>
                     <td><span class="type-badge">deposit</span></td>
                     <td>Salary credit</td>
+                    <td class="green-text">+R3,000.00</td>
                 </tr>
             </table>
+        </div>
 
+        <!-- ACCOUNT INFORMATION -->
+        <div class="card">
+            <h3>Account Information</h3>
+
+            <p><strong>Account Number</strong><br>0000 0000 demo</p>
+            <p><strong>Email</strong><br>demo@securebank.com</p>
+            <p><strong>Member Since</strong><br>January 15, 2025</p>
+
+            <div class="info-tags">
+                <span class="tag blue-tag">Personal</span>
+                <span class="tag green-tag">Active</span>
+            </div>
+
+            <br><br>
+
+            <h3>Quick Stats</h3>
+            <p><strong>Total Transactions:</strong> 2</p>
+            <p><strong>Total Deposits:</strong> R5,000.00</p>
+            <p><strong>Total Withdrawals:</strong> R0.00</p>
         </div>
 
     </div>
 
+</div>
+
 </body>
-
 </html>
-<!-- CSS part -->
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #eef3ff;
-        /* Light gradient-like background */
-    }
 
-    /* HEADER */
-    header {
-        background: white;
-        color: #0a2351;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    /* Left header */
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    /* Right header (profile + logout) */
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .profile-circle {
-        background: #1e40af;
-        color: white;
-        padding: 12px 15px;
-        border-radius: 50%;
-        font-weight: bold;
-    }
-
-    .logout-btn {
-        background: white;
-        border: 1px solid #cbd5e1;
-        padding: 8px 16px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .logout-btn:hover {
-        background: #f3f4f6;
-    }
-
-    /* PAGE WRAPPER */
-    .container {
-        padding: 30px;
-    }
-
-    /* BALANCE CARD (gradient blue) */
-    .balance-card {
-        background: linear-gradient(to right, #4f46e5, #2563eb);
-        color: white;
-        padding: 30px;
-        border-radius: 18px;
-        font-size: 1.8rem;
-        margin-bottom: 30px;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    .balance-card h3 {
-        font-weight: normal;
-        opacity: 0.9;
-    }
-
-    ._balance_icon {
-        font-size: 30px;
-        margin-right: 10px;
-    }
-
-    /* ACTION BUTTONS */
-    .actions {
-        display: flex;
-        gap: 15px;
-        margin: 20px 0;
-    }
-
-    .action-btn {
-        background: white;
-        padding: 15px 25px;
-        border-radius: 12px;
-        border: 1px solid #cbd5e1;
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-
-    .action-btn:hover {
-        background: #e5e7eb;
-    }
-
-    /* TRANSACTION PANEL */
-    .transaction-panel {
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
-    }
-
-    .transaction-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .transaction-header button {
-        background: white;
-        border: 1px solid #d1d5db;
-        padding: 8px 20px;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-
-    table {
-        width: 100%;
-        margin-top: 20px;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .type-badge {
-        background: #22c55e;
-        color: white;
-        padding: 3px 12px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-    }
-</style>
