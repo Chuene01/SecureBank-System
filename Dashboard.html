@@ -5,8 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureBank Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+</head>
 
-    <style>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <span class="bank-icon">🏦</span> SecureBank
+        <p class="subtext">Online Banking</p>
+    </div>
+
+    <div class="header-right">
+        <div class="profile-info">
+            <div class="profile-circle">DE</div>
+            <div>
+                <strong>demo</strong><br>
+                <span class="small-gray">Personal Account</span>
+            </div>
+        </div>
+        <button class="logout-btn">Logout</button>
+    </div>
+</header>
+
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+
+    <!-- BALANCE CARD -->
+    <div class="balance-card">
+        <div>
+            <p class="balance-title">Available Balance</p>
+            <p class="balance-amount">R5,000.00</p>
+            <p class="account-label">Account: •••• •••• demo</p>
+        </div>
+
+        <span class="eye-icon">👁️</span>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+        <div class="action-card">
+            <div class="action-icon green">⬇</div>
+            <p class="action-title">Deposit Money</p>
+            <p class="action-desc">Add funds to your account</p>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon blue">⬆</div>
+            <p class="action-title">Withdraw Money</p>
+            <p class="action-desc">Make a cash withdrawal</p>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon purple">⟳</div>
+            <p class="action-title">Transaction History</p>
+            <p class="action-desc">View all transactions</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT GRID -->
+    <div class="grid">
+
+        <!-- RECENT TRANSACTIONS -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Transactions</h3>
+                <button class="viewall-btn">View All ➜</button>
+            </div>
+            <p class="gray">Your latest account activity</p>
+
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+
+                <tr>
+                    <td>Nov 15, 2025, 02:00 AM</td>
+                    <td><span class="type-badge">deposit</span></td>
+                    <td>Initial deposit</td>
+                    <td class="green-text">+R2,000.00</td>
+                </tr>
+
+                <tr>
+                    <td>Nov 16, 2025, 02:00 AM</td>
+                    <td><span class="type-badge">deposit</span></td>
+                    <td>Salary credit</td>
+                    <td class="green-text">+R3,000.00</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ACCOUNT INFORMATION -->
+        <div class="card">
+            <h3>Account Information</h3>
+
+            <p><strong>Account Number</strong><br>0000 0000 demo</p>
+            <p><strong>Email</strong><br>demo@securebank.com</p>
+            <p><strong>Member Since</strong><br>January 15, 2025</p>
+
+            <div class="info-tags">
+                <span class="tag blue-tag">Personal</span>
+                <span class="tag green-tag">Active</span>
+            </div>
+
+            <br><br>
+
+            <h3>Quick Stats</h3>
+            <p><strong>Total Transactions:</strong> 2</p>
+            <p><strong>Total Deposits:</strong> R5,000.00</p>
+            <p><strong>Total Withdrawals:</strong> R0.00</p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<style>
     body {
     margin: 0;
     font-family: Arial, sans-serif;
