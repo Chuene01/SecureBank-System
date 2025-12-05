@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SecureBank — Login to Your Account</title>
+
+  <!-- 🔵 EMBEDDED BLUE THEME CSS -->
+  <style>
+    :root{
+      --bg-1: #eef6ff;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1e56c9;
+      --muted: #6b7280;
+      --accent: #10b981;
+      --card-radius: 14px;
+      --shadow: 0 10px 30px rgba(37,99,235,0.08);
+      --max-width: 460px;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, Arial;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background: linear-gradient(180deg, #f5fbff, var(--bg-1));
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:24px;
+      color:#0f172a;
+    }
+
+    .card{
+      width:100%;
+      max-width:var(--max-width);
+      background:var(--card);
+      border-radius:var(--card-radius);
+      box-shadow:var(--shadow);
+      padding:26px;
+      border:1px solid rgba(15,23,42,0.05);
+    }
+
+    .logo{
+      width:72px;height:72px;object-fit:cover;
+      border-radius:14px;
+      box-shadow:0 8px 18px rgba(37,99,235,0.12);
+    }
+
+    .h1{
+      font-size:22px;
+      font-weight:700;
+      margin:0;
+    }
+    .h-sub{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .badge-secure{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      background:#ecfdf5;
+      color:#065f46;
+      border-radius:20px;
+      font-size:13px;
+      border:1px solid rgba(6,95,70,0.1);
+    }
+
+    .form{
+      display:grid;
+      gap:16px;
+    }
+
+    .field{display:flex;flex-direction:column;gap:6px}
+    .label{
+      font-size:14px;
+      font-weight:600;
+      color:#0f172a;
+    }
+
+    /* INPUT + ICON */
+    .input-with-icon{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+    .icon-left{
+      position:absolute;
+      left:12px;
+      font-size:18px;
+      color:#94a3b8;
+    }
+    .icon-right{
+      position:absolute;
+      right:10px;
+      background:none;
+      border:0;
+      font-size:18px;
+      cursor:pointer;
+      color:#64748b;
+    }
+
+    input{
+      width:100%;
+      padding:12px 44px;
+      border-radius:10px;
+      border:1px solid #e6eefc;
+      background:#f7f9ff;
+      font-size:15px;
+      color:#0f172a;
+    }
+    input:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 4px 14px rgba(37,99,235,0.18);
+    }
+
+    .btn{
+      width:100%;
+      padding:12px;
+      font-size:16px;
+      font-weight:700;
+      border-radius:10px;
+      cursor:pointer;
+      border:0;
+    }
+    .btn-primary{
+      background:var(--primary);
+      color:white;
+      box-shadow:0 8px 20px rgba(37,99,235,0.2);
+    }
+    .btn-primary:hover{
+      background:var(--primary-dark);
+    }
+
+    .btn-ghost{
+      background:transparent;
+      color:var(--primary);
+      border:2px solid rgba(37,99,235,0.15);
+    }
+
+    .helper{
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .footer-note{
+      margin-top:14px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+    
+    .forgot-password {
+      text-align: right;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    
+    .forgot-password a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card" role="main" aria-labelledby="loginTitle">
+
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:10px">
+      <!-- LOGIN LOGO IMAGE -->
+      <!--  <img src="/mnt/data/WhatsApp Image 2025-11-21 at 15.22.55.jpeg" class="logo" alt=""> -->
+      <div style="font-weight:700;font-size:18px;margin-top:6px">SecureBank</div>
+      <div style="color:#64748b;font-size:14px">Welcome back</div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <h2 id="loginTitle" class="h1">Sign In</h2>
+        <div class="h-sub">Access your SecureBank account</div>
+      </div>
+      <div class="badge-secure">🔒 Secure</div>
+    </div>
+
+    <form id="loginForm" class="form" action="http://localhost:5000/login" method="POST">
+
+      <div class="field">
+        <label class="label" for="email">Email Address</label>
+        <div class="input-with-icon">
+          <span class="icon-left">✉️</span>
+          <input id="email" name="email" type="email" placeholder="your@email.com">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="password">Password</label>
+        <div class="input-with-icon">
+          <span class="icon-left">🔒</span>
+          <input id="password" name="password" type="password" placeholder="Enter your password">
+          <button type="button" class="icon-right" id="togglePw">👁️</button>
+        </div>
+        <div class="forgot-password">
+          <a href="forgot-password.html">Forgot password?</a>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
+      <button type="button" class="btn btn-ghost" onclick="location.href='register.html'">Don't have an account? Create one</button>
+
+      <div class="helper">
+        By signing in, you agree to SecureBank's  
+        <a href="#" style="color:var(--primary)">Terms</a> &  
+        <a href="#" style="color:var(--primary)">Privacy Policy</a>.
+      </div>
+
+    </form>
+
+    <div class="footer-note">© 2025 SecureBank • Your money, secured your way.</div>
+
+  </main>
+
+  <script>
+    // LOGIN PAGE JS - DEMO VERSION
+    (function(){
+      const form = document.getElementById('loginForm');
+      const password = document.getElementById('password');
+
+      // Password toggle functionality
+      document.getElementById('togglePw').onclick = () => {
+        const hidden = password.type === 'password';
+        password.type = hidden ? 'text' : 'password';
+        togglePw.textContent = hidden ? '🙈' : '👁️';
+      };
+
+      // Form submission - demo version (no validation)
+      form.onsubmit = (e) => {
+        // Prevent actual form submission
+        e.preventDefault();
+        
+        // Show loading state
+        document.getElementById('loginBtn').disabled = true;
+        document.getElementById('loginBtn').textContent = "Signing in...";
+        
+        // Simulate API call/processing delay
+        setTimeout(() => {
+          // Redirect to dashboard after successful "login"
+          window.location.href = 'dashboard.html';
+        }, 1500);
+      };
+    })();
+  </script>
+
+</body>
+</html>
