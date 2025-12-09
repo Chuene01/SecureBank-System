@@ -12,6 +12,7 @@ A modern, secure banking system built with HTML/CSS/JavaScript frontend and Pyth
 | **Elona** | Frontend/Backend Developer | API Integration |
 | **Zwavhudi** | Frontend Developer | Backend Developer |
 | **Jaden** | UI/UX Designer | Visual Design |
+| **Mthobisi** | UI/UX Designer | Design System, Wireframes |
 | **Chuene** | Backend Lead | API Development, MongoDB |
 | **Ntando** | DevOps Engineer/Project Manager| Tracking,Infrastructure, Documentation |
 | **Elihle** | Project Manager | Agile Ceremonies, Tracking |
@@ -512,4 +513,4 @@ For questions or issues:
 
 ---
 
-**Last Updated:** November 2025  
+**Last Updated:** 24 November 2025  

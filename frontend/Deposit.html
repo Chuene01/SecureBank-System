@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Money</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #666666;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: color 0.2s;
+            border-radius: 4px;
+        }
+
+        .close-button:hover {
+            color: #333333;
+            background-color: #f5f5f5;
+        }
+
+        .modal-content {
+            padding: 24px;
+        }
+
+        /* Current Balance Section */
+        .balance-section {
+            margin-bottom: 24px;
+        }
+
+        .balance-box {
+            background-color: #E3F2FD;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .balance-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2196F3;
+            border-radius: 8px;
+        }
+
+        .balance-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .balance-text {
+            flex: 1;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 4px;
+        }
+
+        .balance-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        /* Quick Select Amount Section */
+        .quick-select-section {
+            margin-bottom: 24px;
+        }
+
+        .section-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333333;
+            margin-bottom: 12px;
+        }
+
+        .quick-select-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quick-select-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #333333;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-select-btn:hover {
+            background-color: #f5f5f5;
+            border-color: #bdbdbd;
+        }
+
+        .quick-select-btn.active {
+            background-color: #2196F3;
+            color: #ffffff;
+            border-color: #2196F3;
+        }
+
+        .custom-btn {
+            flex: 1;
+        }
+
+        /* Enter Amount Section */
+        .enter-amount-section {
+            margin-bottom: 24px;
+        }
+
+        .amount-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333333;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        .amount-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .amount-input::placeholder {
+            color: #bdbdbd;
+        }
+
+        /* Deposit Limits Section */
+        .deposit-limits-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .limit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .limit-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .limit-label {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .limit-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .cancel-btn,
+        .continue-btn {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cancel-btn {
+            background-color: #ffffff;
+            border: 1px solid #bdbdbd;
+            color: #333333;
+        }
+
+        .cancel-btn:hover {
+            background-color: #f5f5f5;
+            border-color: #999999;
+        }
+
+        .continue-btn {
+            background-color: #757575;
+            border: none;
+            color: #ffffff;
+        }
+
+        .continue-btn:hover {
+            background-color: #616161;
+        }
+
+        .continue-btn:disabled {
+            background-color: #bdbdbd;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">Deposit Money</h2>
+                <button class="close-button" id="closeButton" aria-label="Close">×</button>
+            </div>
+            
+            <div class="modal-content">
+                <!-- Current Balance Section -->
+                <div class="balance-section">
+                    <div class="balance-box">
+                        <div class="balance-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4Z" fill="white"/>
+                                <path d="M4 8H20V10H4V8Z" fill="#2196F3" opacity="0.3"/>
+                                <text x="12" y="16.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">$</text>
+                            </svg>
+                        </div>
+                        <div class="balance-text">
+                            <div class="balance-label">Current Balance</div>
+                            <div class="balance-amount" id="depositBalance">R0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Select Amount Section -->
+                <div class="quick-select-section">
+                    <label class="section-label">Quick Select Amount</label>
+                    <div class="quick-select-buttons">
+                        <button class="quick-select-btn" data-amount="50.00">R50.00</button>
+                        <button class="quick-select-btn" data-amount="100.00">R100.00</button>
+                        <button class="quick-select-btn" data-amount="500.00">R500.00</button>
+                        <button class="quick-select-btn custom-btn" id="customBtn">Custom</button>
+                    </div>
+                </div>
+
+                <!-- Enter Amount Section -->
+                <div class="enter-amount-section">
+                    <label class="section-label">Enter Amount</label>
+                    <input type="text" class="amount-input" id="amountInput" placeholder="R 0.00" />
+                </div>
+
+                <!-- Deposit Limits Section -->
+                <div class="deposit-limits-section">
+                    <div class="limit-row">
+                        <span class="limit-label">Minimum deposit:</span>
+                        <span class="limit-value">R10.00</span>
+                    </div>
+                    <div class="limit-row">
+                        <span class="limit-label">Maximum deposit:</span>
+                        <span class="limit-value">R10,000.00</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="cancel-btn" onclick="window.location.href='dashboard.html'">Cancel</button>
+                    <button class="continue-btn" id="continueBtn" disabled>Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeButton = document.getElementById('closeButton');
+        const continueBtn = document.getElementById('continueBtn');
+        const amountInput = document.getElementById('amountInput');
+        const quickSelectButtons = document.querySelectorAll('.quick-select-btn');
+        const customBtn = document.getElementById('customBtn');
+
+        // Load balance dynamically
+        let depositBalance = Number(localStorage.getItem("balance")) || 0;
+        document.getElementById("depositBalance").innerText =
+        "R" + depositBalance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+
+        // Format currency input
+        function formatCurrency(value) {
+            // Remove all non-digit characters except decimal point
+            let cleaned = value.replace(/[^\d.]/g, '');
+            
+            // Ensure only one decimal point
+            const parts = cleaned.split('.');
+            if (parts.length > 2) {
+                cleaned = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limit to 2 decimal places
+            if (parts.length === 2 && parts[1].length > 2) {
+                cleaned = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            
+            return cleaned;
+        }
+
+        // Format display value with R prefix
+        function formatDisplayValue(value) {
+            if (!value || value === '0' || value === '0.00') {
+                return '';
+            }
+            return `R ${parseFloat(value).toFixed(2)}`;
+        }
+
+        // Handle amount input
+        amountInput.addEventListener('input', (e) => {
+            const rawValue = e.target.value.replace(/[^\d.]/g, '');
+            const formatted = formatCurrency(rawValue);
+            
+            // Remove active state from quick select buttons when typing
+            quickSelectButtons.forEach(btn => {
+                if (btn !== customBtn) {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            if (formatted) {
+                e.target.value = formatDisplayValue(formatted);
+            } else {
+                e.target.value = '';
+            }
+            
+            // Update continue button state
+            updateContinueButton();
+        });
+
+        // Handle quick select buttons
+        quickSelectButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn === customBtn) {
+                    // Clear input and focus
+                    amountInput.value = '';
+                    amountInput.focus();
+                    quickSelectButtons.forEach(b => b.classList.remove('active'));
+                } else {
+                    const amount = btn.getAttribute('data-amount');
+                    amountInput.value = formatDisplayValue(amount);
+                    
+                    // Update active state
+                    quickSelectButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+                
+                updateContinueButton();
+            });
+        });
+
+        // Update continue button state based on validation
+        function updateContinueButton() {
+            const value = amountInput.value.replace(/[^\d.]/g, '');
+            const numValue = parseFloat(value) || 0;
+            const minAmount = 10.00;
+            const maxAmount = 10000.00;
+            
+            if (numValue >= minAmount && numValue <= maxAmount) {
+                continueBtn.disabled = false;
+            } else {
+                continueBtn.disabled = true;
+            }
+        }
+
+        // Handle continue button
+        continueBtn.addEventListener('click', async () => {
+            const rawValue = amountInput.value.replace(/[^\d.]/g, '');
+            const amount = parseFloat(rawValue);
+
+            let balance = Number(localStorage.getItem("balance")) || 0;
+            let newBalance = balance + amount;
+            // save updated balance
+            localStorage.setItem("balance", newBalance);
+
+            // update balance locally
+            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+
+            transactions.push({
+                type: "deposit",
+                amount: amount,
+                description: "Deposit",
+                date: new Date(),
+                balance: newBalance, // save updated balance
+                id: "TX" + Date.now().toString().slice(-6)
+            });
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+
+            if (isNaN(amount) || amount < 10 || amount > 10000) {
+                alert("Invalid deposit amount");
+                return;
+            }
+
+            // Read username saved from login
+            const username = localStorage.getItem("username");
+
+            if (!username) {
+                alert("Error: No user logged in.");
+                return;
+            }
+
+            // Send deposit to backend
+            try {
+                const res = await fetch("http://127.0.0.1:8000/deposit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: username,
+                        amount: amount
+                    })
+                });
+
+                const data = await res.json();
+                console.log("Backend response:", data);
+
+                if (res.ok) {
+                    alert(`Deposit of R${amount.toFixed(2)} successful!`);
+                    window.location.href = "dashboard.html"; // redirect
+                } else {
+                    alert("Deposit failed: " + (data.error || data.detail));
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Could not connect to server.");
+            }
+        });
+
+
+        // Handle close button
+        closeButton.addEventListener('click', () => {
+            closeModal();
+        });
+
+        // Close modal when clicking overlay
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Close modal function
+        function closeModal() {
+            // Reset form
+            amountInput.value = '';
+            quickSelectButtons.forEach(btn => btn.classList.remove('active'));
+            updateContinueButton();
+            
+            // Hide modal (you can add animation here if needed)
+            // modalOverlay.style.display = 'none';
+            console.log('Modal closed');
+        }
+
+        // Initialize continue button state
+        updateContinueButton();
+
+        // Handle Enter key in amount input
+        amountInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !continueBtn.disabled) {
+                continueBtn.click();
+            }
+        });
+
+        function generateId() {
+        return "TX" + Date.now().toString().slice(-6);
+        }
+    </script>
+</body>
+</html>
+
