@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models import User, Login, Deposit, Withdraw
 from crud import create_user, get_user, record_transaction, get_user_transactions
-from auth import hash_password, verify_password
+from auth_utils import hash_password, verify_password
 from database import users_col
 
 app = FastAPI()
