@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdrawal | Secure Bank</title>
+
+<style>
+    :root {
+        --primary: #4a3aff;
+        --primary-light: #eef0ff;
+        --text-dark: #1f1f1f;
+        --bg: #f7f9fc;
+        --border: #dce1eb;
+        --success: #19c37d;
+        --radius: 12px;
+        --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        font-family: "Segoe UI", sans-serif;
+        color: var(--text-dark);
+    }
+
+    .container {
+        max-width: 650px;
+        margin: 30px auto;
+        background: white;
+        padding: 25px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    h2 {
+        margin: 0 0 20px 0;
+        text-align: center;
+        font-size: 26px;
+    }
+
+    /* BALANCE BOX */
+    .balance-box {
+        border: 1px solid var(--border);
+        background: var(--primary-light);
+        padding: 20px;
+        border-radius: var(--radius);
+        margin-bottom: 25px;
+    }
+
+    .balance-title {
+        opacity: 0.8;
+        font-size: 13px;
+    }
+
+    .balance-value {
+        font-size: 22px;
+        font-weight: bold;
+        margin: 5px 0;
+    }
+
+    .after {
+        margin-top: 10px;
+        font-size: 15px;
+        opacity: 0.8;
+    }
+
+    /* QUICK SELECT BUTTONS */
+    .quick-select {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+        margin-bottom: 25px;
+    }
+
+    .quick-select button {
+        flex: 1;
+        padding: 12px 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .quick-select button.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .quick-select button:hover {
+        background: #f1f1f1;
+    }
+
+    /* INPUT BOX */
+    .input-box {
+        margin-bottom: 12px;
+    }
+
+    .input-box label {
+        display: block;
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 14px;
+        font-size: 22px;
+        border-radius: 12px;
+        border: 2px solid var(--primary-light);
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .input-field:focus {
+        border-color: var(--primary);
+    }
+
+    .small-note {
+        margin-top: 5px;
+        font-size: 14px;
+        opacity: 0.7;
+    }
+
+    /* LIMIT BOX */
+    .limit-box {
+        background: var(--primary-light);
+        padding: 15px;
+        border-radius: var(--radius);
+        margin-top: 25px;
+        font-size: 14px;
+    }
+
+    .limit-row {
+        margin: 4px 0;
+    }
+
+    /* FOOTER BUTTONS */
+    .footer {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .cancel-btn, .confirm-btn {
+        flex: 1;
+        padding: 14px;
+        border-radius: var(--radius);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: 0.2s;
+    }
+
+    .cancel-btn {
+        background: white;
+        border: 1px solid var(--border);
+    }
+
+    .cancel-btn:hover {
+        background: #f3f3f3;
+    }
+
+    .confirm-btn {
+        background: var(--primary);
+        color: white;
+    }
+
+    .confirm-btn:hover {
+        background: #3428d1;
+    }
+
+    @media(max-width: 600px) {
+        .quick-amount {
+            flex-direction: column;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Withdraw Money</h2>
+
+    <div class="balance-box">
+        <div class="balance-title">Available Balance</div>
+        <div class="balance-value" id="currentBalance">R5,000.00</div>
+        <div class="after">After withdrawal: <span id="afterBalance">R5,000.00</span></div>
+    </div>
+
+    <h4>Quick Select Amount</h4>
+    <div class="quick-select">
+        <button onclick="selectQuick(50)" id="btn50">R50.00</button>
+        <button onclick="selectQuick(100)" id="btn100">R100.00</button>
+        <button onclick="selectQuick(200)" id="btn200">R200.00</button>
+        <button onclick="selectCustom()" id="btnCustom">Custom</button>
+    </div>
+
+    <div class="input-box">
+        <label>Enter Amount</label>
+        <input type="number" id="amountInput" class="input-field" placeholder="R 0" oninput="updateValues()">
+        <div class="small-note">Remaining balance: <span id="remainingBalance">R5,000.00</span></div>
+    </div>
+
+    <div class="limit-box">
+        <div class="limit-row">Minimum withdrawal: <strong>R10.00</strong></div>
+        <div class="limit-row">Available to withdraw: <strong>R5,000.00</strong></div>
+    </div>
+
+    <div class="footer">
+        <button class="cancel-btn" onclick="window.location.href='dashboard.html'">Cancel</button>
+        <button class="confirm-btn" onclick="confirmWithdrawal()">Confirm</button>
+    </div>
+</div>
+<script>
+let balance = Number(localStorage.getItem("balance")) || 0;
+
+document.getElementById("currentBalance").innerText =
+    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+document.getElementById("afterBalance").innerText =
+    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+document.getElementById("remainingBalance").innerText =
+    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+
+// Update remaining balance on load
+document.getElementById("remainingBalance").innerText =
+    "R" + balance.toLocaleString();
+
+// Reset active button styling
+function clearActive() {
+    document.querySelectorAll(".quick-select button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+}
+
+// Quick select buttons function
+function selectQuick(amount) {
+    clearActive();
+
+    // Highlight clicked button
+    if (amount === 50) document.getElementById("btn50").classList.add("active");
+    if (amount === 100) document.getElementById("btn100").classList.add("active");
+    if (amount === 200) document.getElementById("btn200").classList.add("active");
+
+    // Set input value
+    document.getElementById("amountInput").value = amount;
+
+    updateValues();
+}
+
+// Custom button function
+function selectCustom() {
+    clearActive();
+    document.getElementById("btnCustom").classList.add("active");
+
+    // Clear field for user typing
+    document.getElementById("amountInput").value = "";
+    document.getElementById("amountInput").focus();
+
+    updateValues();
+}
+
+// Recalculate remaining balance when typing
+function updateValues() {
+    let entered = Number(document.getElementById("amountInput").value);
+    let remaining = balance - entered;
+
+    if (remaining < 0) {
+        document.getElementById("remainingBalance").innerText = "Insufficient funds";
+        return;
+    }
+
+    document.getElementById("remainingBalance").innerText =
+    "R" + storedBalance.toLocaleString();
+}
+
+function generateId() {
+    return "TX" + Date.now().toString().slice(-6);
+}
+</script>
+
+<script>
+function confirmWithdrawal() {
+    let amount = Number(document.getElementById("amountInput").value);
+
+    // Validate input
+    if (amount <= 0) {
+        alert("Enter a valid withdrawal amount.");
+        return;
+    }
+
+    // Get stored balance
+    let storedBalance = Number(localStorage.getItem("balance"));
+    if (isNaN(storedBalance)) {
+        storedBalance = 0;
+    }
+
+    // Ensure funds available
+    if (amount > storedBalance) {
+        alert("Insufficient funds.");
+        return;
+    }
+
+    // New balance
+    let newBalance = storedBalance - amount;
+
+    // Update balance
+    localStorage.setItem("balance", newBalance);
+
+    // Save transaction history
+    let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    transactions.push({
+        type: "withdrawal",
+        description: "Withdrawal",
+        amount: amount,
+        balance: newBalance,
+        date: new Date(),
+        id: "TX" + Date.now().toString().slice(-6)
+    });
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+
+    alert("Withdrawal successful.");
+
+    // Redirect back to dashboard
+    window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>
