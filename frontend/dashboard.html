@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <span class="bank-icon">🏦</span> SecureBank
+        <p class="subtext">Online Banking</p>
+    </div>
+
+    <div class="header-right">
+        <div class="profile-info">
+            <div class="profile-circle" id="profileInitials">--</div>
+            <div>
+                <strong id="displayUsername">User</strong><br>
+                <span class="small-gray">Personal Account</span>
+            </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper">
+
+    <!-- BALANCE CARD -->
+    <div class="balance-card">
+        <div>
+            <p class="balance-title">Available Balance</p>
+            <p class="balance-amount" id="dashboardBalance">R0.00</p>
+            <p class="account-label">Account: •••• •••• demo</p>
+        </div>
+
+        <span class="eye-icon" id="toggleBalance">👁️</span>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <a href="deposit-modal.html" class="action-card">
+        <div class="action-icon green">⬇</div>
+        <p class="action-title">Deposit Money</p>
+        <p class="action-desc">Add funds to your account</p>
+    </a>
+
+    <a href="withdraw.html" class="action-card">
+        <div class="action-icon blue">⬆</div>
+        <p class="action-title">Withdraw Money</p>
+        <p class="action-desc">Make a cash withdrawal</p>
+    </a>
+
+    <a href="history.html" class="action-card">
+        <div class="action-icon purple">⟳</div>
+        <p class="action-title">Transaction History</p>
+        <p class="action-desc">View all transactions</p>
+    </a>
+
+
+    <!-- MAIN CONTENT GRID -->
+    <div class="grid">
+
+        <!-- RECENT TRANSACTIONS -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Transactions</h3>
+                <button class="viewall-btn" onclick="window.location.href='history.html'">View All ➜</button>
+            </div>
+            <p class="gray">Your latest account activity</p>
+
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+
+                <tbody id="recentBody"></tbody>
+            </table>
+        </div>
+
+        <!-- ACCOUNT INFORMATION -->
+        <div class="card">
+            <h3>Account Information</h3>
+            <p><strong>Account Number</strong><br><span id="accountNumber">0000 0000 ----</span></p>
+            <p><strong>Email</strong><br><span id="displayEmail"></span></p>
+            
+            <div class="info-tags">
+                <span class="tag blue-tag">Personal</span>
+                <span class="tag green-tag">Active</span>
+            </div>
+
+            <br><br>
+
+            <h3>Quick Stats</h3>
+            <p><strong>Total Transactions:</strong> <span id="totalCount">0</span></p>
+            <p><strong>Total Deposits:</strong> <span id="totalDeposits">R0.00</span></p>
+            <p><strong>Total Withdrawals:</strong> <span id="totalWithdrawals">R0.00</span></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html"; // change if your file is named differently
+}
+</script>
+
+<script>
+function formatCurrency(amount) {
+    return "R" + amount.toLocaleString(undefined, { minimumFractionDigits: 2 });
+}
+
+let balance = Number(localStorage.getItem("balance")) || 0;
+
+// update balance display
+document.getElementById("dashboardBalance").innerText = formatCurrency(balance);
+</script>
+
+<script>
+function formatCurrency(amount) {
+    return "R" + amount.toLocaleString(undefined, { minimumFractionDigits: 2 });
+}
+
+// Get stored transactions
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+
+// Reverse for latest first
+transactions.reverse();
+
+// ============= UPDATE RECENT TRANSACTIONS =============
+let recentBody = document.getElementById("recentBody");
+recentBody.innerHTML = "";
+
+let recent = transactions.slice(0, 2);
+
+recent.forEach(t => {
+    let row = document.createElement("tr");
+    let dateObj = new Date(t.date);
+
+    row.innerHTML = `
+        <td>${dateObj.toLocaleDateString()}, ${dateObj.toLocaleTimeString()}</td>
+        <td><span class="type-badge">${t.type}</span></td>
+        <td>${t.description}</td>
+        <td class="${t.type === 'deposit' ? 'green-text' : 'red-text'}">
+            ${t.type === 'deposit' ? '+' : '-'}${formatCurrency(t.amount)}
+        </td>
+    `;
+
+    recentBody.appendChild(row);
+});
+
+// ============= UPDATE TOTAL STATS =============
+let totalDeposits = transactions
+    .filter(t => t.type === "deposit")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+let totalWithdrawals = transactions
+    .filter(t => t.type === "withdrawal")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+document.getElementById("totalCount").innerText = transactions.length;
+document.getElementById("totalDeposits").innerText = formatCurrency(totalDeposits);
+document.getElementById("totalWithdrawals").innerText = formatCurrency(totalWithdrawals);
+</script>
+
+<script>
+let balanceVisible = true;
+
+document.getElementById("toggleBalance").addEventListener("click", () => {
+    const balanceEl = document.getElementById("dashboardBalance");
+    const icon = document.getElementById("toggleBalance");
+
+    balanceVisible = !balanceVisible;
+
+    if (balanceVisible) {
+        balanceEl.innerText = formatCurrency(balance);
+        icon.textContent = "👁️";
+    } else {
+        balanceEl.innerText = "••••";
+        icon.textContent = "🙈";
+    }
+});
+</script>
+
+<script>
+// Read stored data
+const username = localStorage.getItem("username");
+const storedEmail = localStorage.getItem("email");
+
+// If user is not logged in, redirect
+if (!username) {
+    window.location.href = "login.html";
+}
+
+// Display username
+document.getElementById("displayUsername").innerText = username;
+
+// Display initials
+document.getElementById("profileInitials").innerText =
+    username.substring(0, 2).toUpperCase();
+
+// Display email (fallback if missing)
+document.getElementById("displayEmail").innerText =
+    storedEmail ? storedEmail : "Not Available";
+
+// Dynamic account number
+document.getElementById("accountNumber").innerText =
+    "0000 0000 " + username;
+</script>
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
+
+<style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef3ff;
+}
+
+/* HEADER */
+header {
+    background: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #d9dce0;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #0a2351;
+}
+
+.subtext {
+    font-size: 13px;
+    color: gray;
+    margin-top: -5px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.small-gray {
+    font-size: 12px;
+    color: gray;
+}
+
+.profile-circle {
+    background: #1e40af;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.logout-btn {
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    cursor: pointer;
+}
+
+/* PAGE WRAPPER */
+.page-wrapper {
+    padding: 30px;
+}
+
+/* BALANCE CARD */
+.balance-card {
+    background: linear-gradient(to right, #4f46e5, #2563eb);
+    color: white;
+    padding: 35px;
+    border-radius: 20px;
+    font-size: 1.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-title {
+    opacity: 0.85;
+}
+
+.balance-amount {
+    font-size: 3rem;
+    margin: 5px 0;
+}
+
+.account-label {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.eye-icon {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.eye-icon:hover {
+    opacity: 1;
+}
+
+/* QUICK ACTIONS */
+.quick-actions {
+    display: flex;
+    margin: 25px 0;
+    gap: 25px;
+}
+
+.action-card {
+    display: block;      /* makes it behave like div */
+    text-decoration: none; 
+    color: inherit;      /* stops purple default text */
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    transition: 0.2s ease-in-out;
+}
+
+.action-icon {
+    font-size: 26px;
+    padding: 15px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.green { background: #d1fadf; }
+.blue  { background: #dbeafe; }
+.purple { background: #ede9fe; }
+
+.red-text {
+    color: red;
+    font-weight: 600;
+}
+
+.action-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.action-desc {
+    color: gray;
+    margin-top: -5px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.viewall-btn {
+    padding: 8px 18px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.type-badge {
+    background: #22c55e;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 12px;
+}
+
+.green-text {
+    color: #16a34a;
+}
+
+/* TAGS */
+.tag {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.blue-tag { background: #dbeafe; color: #2563eb; }
+.green-tag { background: #dcfce7; color: #15803d; }
+
+</style>
+</head>
+
+

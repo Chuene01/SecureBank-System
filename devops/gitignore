@@ -1,0 +1,92 @@
+# Environment variables
+.env
+.env.local
+.env.production
+.env.*.local
+*.env
+
+# Docker volumes and data
+docker-compose.override.yml
+*.log
+logs/
+
+# Kubernetes secrets
+*secret*.yaml
+*secrets*.yaml
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+
+# Ansible vault files
+vault.yml
+vault_pass.txt
+
+# SSH keys and certificates
+*.pem
+*.key
+*.crt
+*.p12
+id_rsa*
+*.pub
+
+# Cloud provider credentials
+credentials
+*.credentials
+gcloud-service-key.json
+aws-credentials.ini
+
+# Monitoring and metrics data
+prometheus_data/
+grafana_data/
+alertmanager_data/
+
+# Backup files
+*.backup
+*.bak
+*.old
+backup/
+backups/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# CI/CD artifacts
+build/
+dist/
+*.zip
+*.tar.gz
+*.tgz
+
+# Node modules (if using any JS tools)
+node_modules/
+
+# Python cache (if using Python scripts)
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Helm charts
+charts/*.tgz
+
+# Local development overrides
+docker-compose.dev.yml
+docker-compose.local.yml
