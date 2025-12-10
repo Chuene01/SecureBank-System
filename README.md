@@ -1,515 +1,289 @@
-# Banking System - Cloud Native Application
+# OpenBank – Cloud-Native Banking System
 
-A modern, secure banking system built with HTML/CSS/JavaScript frontend and Python FastAPI backend, featuring real-time transactions, account management, and comprehensive security.
-
----
-
-## Team Members
-
-| Name | Role | Responsibilities |
-|------|------|-----------------|
-| **Kagiso** | Frontend Lead | Architecture, Code Review |
-| **Elona** | Frontend/Backend Developer | API Integration |
-| **Zwavhudi** | Frontend Developer | Backend Developer |
-| **Jaden** | UI/UX Designer | Visual Design |
-| **Chuene** | Backend Lead | API Development, MongoDB |
-| **Ntando** | DevOps Engineer/Project Manager| Tracking,Infrastructure, Documentation |
-| **Elihle** | Project Manager | Agile Ceremonies, Tracking |
+A cloud-native banking application built as part of a FullStack and DevOps-focused Agile simulation. The project combines frontend banking functionality, a FastAPI backend, MongoDB, and modern DevOps practices including CI/CD, containerization, and monitoring.
 
 ---
 
-## Tech Stack
+## 📋 Project Vision
+
+This project simulates the build of a real-world banking platform while applying:
+
+- Agile sprint planning & execution
+- Frontend–backend integration
+- Secure authentication & transactions
+- DevOps automation (CI/CD, Docker, Kubernetes)
+- Monitoring & observability
+
+**The goal is learning-by-building, not just delivering features.**
+
+---
+
+## 👥 Team
+
+| Name | Role |
+|------|------|
+| Ntando | DevOps Lead / Project Manager |
+| Kagiso | Frontend Lead |
+| Chuene | Backend Lead |
+| Elona | Frontend / Backend Developer |
+| Zwavhudi | Frontend Developer |
+| Mthobisi | Frontend Developer |
+| Jaden | UI/UX Designer |
+| Florence | QA & Documentation |
+| Elihle | Agile Project Manager |
+| Tumi | Database & Backend Support |
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with Flexbox/Grid
-- **JavaScript (ES6+)** - Vanilla JS for interactivity
-- **Fetch API** - HTTP client for API calls
+- HTML5
+- CSS3 (Flexbox & Grid)
+- JavaScript (ES6+)
+- Fetch API
+- Optional React (DevOps phase extension)
 
 ### Backend
-- **Python 3.9+** - Programming language
-- **FastAPI** - Modern web framework
-- **PyMongo** - MongoDB driver
-- **PyJWT** - JSON Web Token authentication
-- **Bcrypt** - Password hashing
-- **Uvicorn** - ASGI server
+- Python 3.9+
+- FastAPI
+- Uvicorn
+- PyMongo
+- JWT (Authentication)
+- Bcrypt / Passlib
 
 ### Database
-- **MongoDB** - NoSQL database for flexible data storage
+- MongoDB
 
-### DevOps
-- **Git & GitHub** - Version control
-- **Docker & Docker Compose** - Containerization
-- **GitHub Actions** - CI/CD pipeline
+### DevOps & Cloud
+- Git & GitHub
+- GitHub Actions (CI/CD)
+- Docker & Docker Compose
+- Kubernetes (Week 3)
+- Prometheus & Grafana (Week 4)
 
 ---
 
-## Features
+## ✨ Core Features
 
-### Week 1 Deliverables
+### Banking Functionality
 - ✅ User Registration & Login
-- ✅ Secure Authentication (JWT)
+- ✅ JWT Authentication
 - ✅ Account Dashboard
-- ✅ Money Deposit
-- ✅ Money Withdrawal
+- ✅ Deposit Money
+- ✅ Withdraw Money (with balance validation)
 - ✅ Transaction History
-- ✅ Responsive Design
+- ✅ Responsive UI
 
-### Security Features
-- Password hashing with bcrypt
-- JWT token-based authentication
-- Protected API routes
+### Security
+- Password hashing
+- JWT-protected routes
 - Input validation
-- CORS protection
+- CORS configuration
 
 ---
 
-## Prerequisites
+## 📅 Sprint Timeline
 
-Before you begin, ensure you have the following installed:
+### Week 1 – Planning & Core Build ✅
+- Agile board & user stories
+- Frontend pages
+- Backend API
+- Authentication & transactions
+- Local state persistence
 
-- **Python 3.9 or higher** - [Download](https://www.python.org/downloads/)
-- **MongoDB 5.0 or higher** - [Download](https://www.mongodb.com/try/download/community)
-- **Git** - [Download](https://git-scm.com/downloads)
-- **Code Editor** - VS Code recommended
+### Week 2 – Testing & Containerization (Current)
+- Docker & Docker Compose
+- API testing (Postman)
+- CI pipeline setup
+- Code quality improvements
 
----
+### Week 3 – CI/CD & Deployment
+- GitHub Actions pipelines
+- Kubernetes deployment
+- Infrastructure as Code
 
-## Installation & Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/DopeGrammerZA/banking-system-cloud-native.git
-cd banking-system-cloud-native
-```
-
-### 2. Backend Setup
-
-```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create .env file (copy from .env.example)
-cp .env.example .env
-
-# Edit .env file with your settings
-# Update MONGODB_URI and JWT_SECRET
-```
-
-**requirements.txt** should contain:
-```
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pymongo==4.6.0
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
-pydantic==2.5.0
-python-dotenv==1.0.0
-```
-
-### 3. MongoDB Setup
-
-```bash
-# Start MongoDB service
-# On Windows:
-net start MongoDB
-
-# On macOS (with Homebrew):
-brew services start mongodb-community
-
-# On Linux:
-sudo systemctl start mongod
-
-# Verify MongoDB is running
-mongosh
-# You should see MongoDB shell
-```
-
-### 4. Frontend Setup
-
-```bash
-# Navigate to frontend directory
-cd ../frontend
-
-# No installation needed for vanilla HTML/CSS/JS
-# Just open with a local server
-
-# Option 1: Python HTTP Server
-python -m http.server 3000
-
-# Option 2: VS Code Live Server Extension
-# Right-click index.html → "Open with Live Server"
-```
-
-### 5. Run the Application
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-uvicorn main:app --reload --port 8000
-```
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-python -m http.server 3000
-```
-
-**Access the application:**
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
+### Week 4 – Monitoring & SRE
+- Prometheus & Grafana
+- SLO definitions
+- Final demo & documentation
 
 ---
 
-## API Endpoints
-
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login user |
-
-
-### Transactions
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/transactions/deposit` | Deposit money |
-| POST | `/api/transactions/withdraw` | Withdraw money |
-| GET | `/api/transactions/history` | Get transaction history |
-
-### Example API Requests
-
-**Register User:**
-```json
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "securePassword123"
-}
-```
-
-**Login:**
-```json
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "securePassword123"
-}
-
-Response:
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "...",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "balance": 0
-  }
-}
-```
-
-**Deposit (requires authentication):**
-```json
-POST /api/transactions/deposit
-Authorization: Bearer <your-jwt-token>
-Content-Type: application/json
-
-{
-  "amount": 1000
-}
-```
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-banking-system-cloud-native/
-├── frontend/
-│   ├── css/
-│   │   ├── main.css           # Global styles
-│   │   ├── login.css          # Login page styles
-│   │   ├── dashboard.css      # Dashboard styles
-│   │   └── components.css     # Reusable component styles
-│   ├── js/
-│   │   ├── api.js             # API service layer
-│   │   ├── auth.js            # Authentication logic
-│   │   ├── utils.js           # Utility functions
-│   │   └── pages/
-│   │       ├── login.js       # Login page logic
-│   │       ├── dashboard.js   # Dashboard logic
-│   │       ├── deposit.js     # Deposit page logic
-│   │       ├── withdraw.js    # Withdraw page logic
-│   │       └── history.js     # History page logic
-│   ├── pages/
-│   │   ├── login.html
-│   │   ├── dashboard.html
-│   │   ├── deposit.html
-│   │   ├── withdraw.html
-│   │   └── history.html
-│   ├── assets/
-│   │   └── images/
-│   └── index.html
+project-folder/
 │
 ├── backend/
+│   ├── main.py                # FastAPI entry point
 │   ├── app/
-│   │   ├── __init__.py
-│   │   ├── routes/
-│   │   │   ├── __init__.py
-│   │   │   ├── auth.py        # Authentication routes
-│   │   │   ├── transactions.py # Transaction routes
-│   │   │   └── account.py     # Account routes
-│   │   ├── models/
-│   │   │   ├── __init__.py
-│   │   │   ├── user.py        # User model
-│   │   │   └── transaction.py # Transaction model
-│   │   ├── middleware/
-│   │   │   ├── __init__.py
-│   │   │   └── auth.py        # JWT verification
-│   │   └── config/
-│   │       ├── __init__.py
-│   │       └── database.py    # MongoDB connection
-│   ├── requirements.txt
-│   ├── main.py                # Application entry point
-│   └── .env.example
+│   │   ├── routes/            # API routes
+│   │   ├── models/            # Database models
+│   │   ├── middleware/        # JWT verification
+│   │   └── config/            # MongoDB config
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard.html
+│   ├── deposit.html
+│   ├── withdraw.html
+│   ├── history.html
+│   ├── styles.css
+│   └── js/
+│       ├── api.js
+│       ├── auth.js
+│       └── utils.js
+│
+├── docker/
+│   ├── Dockerfile.backend
+│   ├── Dockerfile.frontend
+│   └── docker-compose.yml
 │
 ├── docs/
 │   ├── architecture/
-│   │   └── system-architecture.md
-│   ├── screenshots/
-│   └── guides/
-│       ├── integration-guide.md
-│       └── troubleshooting.md
+│   ├── guides/
+│   └── screenshots/
 │
-├── docker/
-│   ├── Dockerfile.frontend
-│   ├── Dockerfile.backend
-│   └── docker-compose.yml
+├── .github/workflows/
+│   └── ci.yml
 │
-├── .github/
-│   └── workflows/
-│       └── test.yml           # CI/CD pipeline
-│
-├── .gitignore
 ├── README.md
 └── .env.example
 ```
 
 ---
 
-## Docker Deployment (Week 2)
+## 🚀 Running the Application (Local)
 
-### Quick Start with Docker
+### Prerequisites
+- Python 3.9+
+- MongoDB
+- Git
+- VS Code (recommended)
+
+### 1. Start the Backend
+
+⚠️ **Important:** Backend must be run from inside the `backend/` folder.
 
 ```bash
-# Build and start all services
+cd backend
+uvicorn main:app --reload
+```
+
+✅ **Backend will run at:**
+- Application: http://127.0.0.1:8000
+- API Docs: http://127.0.0.1:8000/docs
+
+### 2. Start the Frontend
+
+**Option 1 — VS Code Live Server**
+- Right-click `login.html` → Open with Live Server
+
+**Option 2 — Python server**
+```bash
+cd frontend
+python -m http.server 3000
+```
+
+✅ **Frontend runs at:** http://localhost:3000
+
+---
+
+## 🔧 Key Fixes & Improvements Implemented
+
+- ✅ Login now verifies passwords correctly
+- ✅ Dashboard shows logged-in username & email
+- ✅ Dynamic account number generation
+- ✅ Deposit & withdraw pages sync balances
+- ✅ Overdraft prevention enforced
+- ✅ Deposits & withdrawals logged correctly
+- ✅ Transaction history fully synced
+- ✅ Improved email validation rules
+
+---
+
+## 💾 State Persistence
+
+- User session stored in `localStorage`
+- Balance persists during session navigation
+
+⚠️ **Note:** Balance resets on browser clear or backend restart  
+➡️ MongoDB persistence planned
+
+---
+
+## 🐳 Docker (Week 2)
+
+```bash
 docker-compose up --build
-
-# Run in detached mode
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop all services
-docker-compose down
 ```
 
-Access the application:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8000
-- MongoDB: mongodb://localhost:27017
+**Services:**
+- Frontend → `localhost:3000`
+- Backend → `localhost:8000`
+- MongoDB → `localhost:27017`
 
 ---
 
-## Testing
+## 🔌 API Overview
 
-### Manual Testing Checklist
+### Auth
 
-- [ ] User can register with valid details
-- [ ] User cannot register with duplicate email
-- [ ] User can login with correct credentials
-- [ ] User cannot login with wrong password
-- [ ] Dashboard displays correct balance
-- [ ] User can deposit money successfully
-- [ ] User can withdraw money (if sufficient balance)
-- [ ] User cannot withdraw more than balance
-- [ ] Transaction history displays all transactions
-- [ ] UI is responsive on mobile and desktop
+| Method | Endpoint |
+|--------|----------|
+| POST | `/api/auth/register` |
+| POST | `/api/auth/login` |
 
-### API Testing with Postman
+### Transactions
 
-1. Import the Postman collection from `/docs/postman/`
-2. Set environment variables:
-   - `base_url`: http://localhost:8000
-   - `token`: (auto-populated after login)
-3. Run the collection tests
+| Method | Endpoint |
+|--------|----------|
+| POST | `/api/transactions/deposit` |
+| POST | `/api/transactions/withdraw` |
+| GET | `/api/transactions/history` |
 
 ---
 
-## Configuration
+## 🔄 Development Workflow
 
-### Environment Variables
-
-**Backend (.env):**
-```env
-MONGODB_URI=mongodb://localhost:27017/banking_system
-JWT_SECRET=your-super-secret-key-change-this-in-production
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-PORT=8000
-DEBUG=True
-```
-
-**Frontend:**
-Update API base URL in `js/api.js`:
-```javascript
-const API_BASE_URL = 'http://localhost:8000/api';
-```
-
----
-
-## Troubleshooting
-
-### MongoDB Connection Issues
-```bash
-# Check if MongoDB is running
-mongosh
-
-# If not running, start it:
-# Windows:
-net start MongoDB
-
-# macOS:
-brew services start mongodb-community
-
-# Linux:
-sudo systemctl start mongod
-```
-
-### Port Already in Use
-```bash
-# Find process using port
-# Windows:
-netstat -ano | findstr :8000
-
-# macOS/Linux:
-lsof -i :8000
-
-# Kill the process
-kill -9 <PID>
-```
-
-### CORS Errors
-Ensure backend CORS middleware allows your frontend origin:
-```python
-allow_origins=["http://localhost:3000"]
-```
-
-For more troubleshooting, see `/docs/guides/troubleshooting.md`
-
----
-
-## Documentation
-
-- [Architecture Overview](/docs/architecture/system-architecture.md)
-- [API Integration Guide](/docs/guides/integration-guide.md)
-- [Troubleshooting Guide](/docs/guides/troubleshooting.md)
-- [Docker Setup Guide](/docs/guides/docker-setup.md)
-
----
-
-## Sprint Progress
-
-### Week 1 (Current Sprint)
-- Project setup and repository structure
-- Team collaboration tools setup
-- UI/UX design and wireframes
-- Frontend pages (Login, Dashboard, Deposit, Withdraw, History)
-- Backend API implementation
-- MongoDB integration
-- Authentication system
-- Transaction management
-
-### Week 2 (Upcoming)
-- [ ] Docker containerization
-- [ ] CI/CD pipeline
-- [ ] Cloud deployment (AWS/Azure/GCP)
-- [ ] Performance optimization
-- [ ] Security hardening
-- [ ] Comprehensive testing
-
----
-
-## Contributing
-
-1. Create a feature branch from `develop`
-   ```bash
-   git checkout develop
-   git pull origin develop
-   git checkout -b feature/your-feature-name
-   ```
-
-2. Make your changes and commit
-   ```bash
-   git add .
-   git commit -m "feat: add your feature description"
-   ```
-
+1. Branch from `develop`
+2. Commit clearly (`feat: add login validation`)
 3. Push to GitHub
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-4. Create a Pull Request to `develop` branch
-5. Request review from team lead
+4. Open Pull Request
+5. Team review
 6. Merge after approval
 
 ---
 
-## License
+## 📚 Learning Outcomes
 
-This project is created for educational purposes as part of a software engineering course.
+This project demonstrates:
 
----
-
-## Support
-
-For questions or issues:
-- Create an issue on GitHub
-- Contact the project manager: Elihle
-- Contact the DevOps engineer: Ntando
+- Full-stack integration
+- Secure API development
+- Frontend state management
+- Agile team collaboration
+- CI/CD automation
+- Cloud-native thinking
 
 ---
 
-## Acknowledgments
+## 💬 Support
 
-- Team members for their dedication and collaboration
-- Course instructors for guidance
-- Open source community for excellent tools and frameworks
+- Open a GitHub issue
+- Contact Ntando (DevOps)
+- Contact Elihle (Project Manager)
 
 ---
 
-**Last Updated:** November 2025  
+## 📄 License
+
+Educational project – DevOps & Cloud Engineering Simulation
+
+---
+
+**Last Updated:** November 2025
+
