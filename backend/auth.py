@@ -1,53 +1,36 @@
-from fastapi import APIRouter, HTTPException
-
-# import in-memory DB
-from main import users, balances
-
-# import utils
+from fastapi import HTTPException
 from auth_utils import hash_password, verify_password, create_access_token
+from crud import get_user, create_user
+from models import User, Login
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
-
-
-@router.post("/register")
-def register(user: dict):
-    username = user["username"]
-
-    if username in users:
+async def register_user(user: User):
+    existing = await get_user(user.username)
+    if existing:
         raise HTTPException(status_code=400, detail="Username already exists")
 
-    # hash the password before saving!
-    hashed_pw = hash_password(user["password"])
+    hashed = hash_password(user.password)
 
-    users[username] = {
-        "email": user["email"],
-        "password": hashed_pw
-    }
+    user_dict = user.dict()
+    user_dict["password"] = hashed
+    user_dict["balance"] = 0
 
-    balances[username] = 0
+    await create_user(user_dict)
 
     return {"message": "registered successfully"}
 
 
-@router.post("/login")
-def login(data: dict):
-    username = data["username"]
-    password = data["password"]
-
-    if username not in users:
+async def login_user(data: Login):
+    user = await get_user(data.username)
+    if not user:
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
-    stored_pw = users[username]["password"]
-
-    # verify bcrypt hash
-    if not verify_password(password, stored_pw):
+    if not verify_password(data.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
-    # generate JWT token
-    token = create_access_token({"sub": username})
+    token = create_access_token({"sub": user["username"]})
 
     return {
         "token": token,
-        "username": username,
-        "email": users[username]["email"]
+        "username": user["username"],
+        "email": user["email"]
     }
