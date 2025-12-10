@@ -12,7 +12,7 @@ This project simulates the build of a real-world banking platform while applying
 - Frontend–backend integration
 - Secure authentication & transactions
 - DevOps automation (CI/CD, Docker, Kubernetes)
-- Monitoring & observability
+- Monitoring & observability 
 
 **The goal is learning-by-building, not just delivering features.**
 
