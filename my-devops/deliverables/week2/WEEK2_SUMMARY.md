@@ -51,7 +51,7 @@ All services successfully containerized and running:
 **Application Status (Team's Work):**
 - Backend-frontend integration in progress
 - API endpoint testing pending bug fixes
-- Frontend loads but shows "Error connecting to server"
+- Frontend loads 
 
 **Backend Endpoints Defined:**
 - `GET /` - Health check
