@@ -7,9 +7,38 @@ from database import users_col, tx_col
 from schemas import LoginRequest
 from datetime import datetime
 from bson import ObjectId
+from fastapi.openapi.utils import get_openapi
 
+app = FastAPI(
+    title="Bank API",
+    version="1.0.0",
+)
 
-app = FastAPI()
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description="Bank API with JWT Auth",
+        routes=app.routes,
+    )
+    
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    
+    openapi_schema["security"] = [{"BearerAuth": []}]
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 # Allow frontend access
 app.add_middleware(
@@ -64,7 +93,7 @@ async def login_user(credentials: LoginRequest):
         "token_type": "bearer"
     }
 
-@app.get("/me")
+@app.get("/profile")
 async def get_profile(user_id: str = Depends(get_current_user)):
     user = await users_col.find_one({"_id": ObjectId(user_id)})
 
