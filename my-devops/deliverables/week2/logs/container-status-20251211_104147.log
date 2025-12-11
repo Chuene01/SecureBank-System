@@ -1,0 +1,4 @@
+CONTAINER ID   IMAGE                      COMMAND                  CREATED          STATUS          PORTS                                             NAMES
+a502d751db60   banking-app-dev-frontend   "/docker-entrypoint.…"   42 minutes ago   Up 42 minutes   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp           banking-frontend
+b5165318fd25   banking-app-dev-backend    "uvicorn main:app --…"   42 minutes ago   Up 42 minutes   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp       banking-backend
+1f514f18b999   mongo:7                    "docker-entrypoint.s…"   42 minutes ago   Up 42 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   banking-mongodb

@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: banking-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MONGODB_URL=mongodb://mongo:27017/
+      - MONGODB_DATABASE=bankingdb
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: banking-frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:7
+    container_name: banking-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=bankingdb
+
+volumes:
+  mongo_data:
