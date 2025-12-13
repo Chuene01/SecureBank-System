@@ -7,38 +7,12 @@ from database import users_col, tx_col
 from schemas import LoginRequest
 from datetime import datetime
 from bson import ObjectId
-from fastapi.openapi.utils import get_openapi
 
 app = FastAPI(
     title="Bank API",
     version="1.0.0",
 )
 
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-    
-    openapi_schema = get_openapi(
-        title=app.title,
-        version=app.version,
-        description="Bank API with JWT Auth",
-        routes=app.routes,
-    )
-    
-    openapi_schema["components"]["securitySchemes"] = {
-        "BearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT"
-        }
-    }
-    
-    openapi_schema["security"] = [{"BearerAuth": []}]
-    
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
-
-app.openapi = custom_openapi
 
 # Allow frontend access
 app.add_middleware(
@@ -86,7 +60,7 @@ async def login_user(credentials: LoginRequest):
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
     # create JWT token
-    token = create_access_token({"user_id": str(user["_id"])})
+    token = create_access_token({"sub": str(user["_id"])})
 
     return {
         "access_token": token,
@@ -94,42 +68,33 @@ async def login_user(credentials: LoginRequest):
     }
 
 @app.get("/profile")
-async def get_profile(user_id: str = Depends(get_current_user)):
-    user = await users_col.find_one({"_id": ObjectId(user_id)})
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
+async def get_profile(current_user=Depends(get_current_user)):
     return {
-        "username": user["username"],
-        "email": user["email"],
-        "balance": user.get("balance", 0)
+        "username": current_user["username"],
+        "email": current_user["email"],
+        "balance": current_user.get("balance", 0)
     }
 
 
 @app.get("/balance")
-async def get_balance(user_id: str = Depends(get_current_user)):
-    user = await users_col.find_one({"_id": ObjectId(user_id)})
-    
+async def get_balance(current_user=Depends(get_current_user)):
     return {
-        "balance": user.get("balance", 0)
+        "balance": current_user.get("balance", 0)
     }
 
 
 @app.post("/deposit")
-async def deposit(amount: float, user_id: str = Depends(get_current_user)):
+async def deposit(amount: float, current_user=Depends(get_current_user)):
     if amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be positive")
 
-    # Update balance
-    result = await users_col.update_one(
-        {"_id": ObjectId(user_id)},
+    await users_col.update_one(
+        {"_id": current_user["_id"]},
         {"$inc": {"balance": amount}}
     )
 
-    # Add transaction record
     await tx_col.insert_one({
-        "user_id": user_id,
+        "user_id": str(current_user["_id"]),
         "type": "deposit",
         "amount": amount,
         "timestamp": datetime.utcnow()
@@ -138,23 +103,22 @@ async def deposit(amount: float, user_id: str = Depends(get_current_user)):
     return {"message": "Deposit successful", "amount": amount}
 
 
+
 @app.post("/withdraw")
-async def withdraw(amount: float, user_id: str = Depends(get_current_user)):
+async def withdraw(amount: float, current_user=Depends(get_current_user)):
     if amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be positive")
 
-    user = await users_col.find_one({"_id": ObjectId(user_id)})
-
-    if user.get("balance", 0) < amount:
+    if current_user.get("balance", 0) < amount:
         raise HTTPException(status_code=400, detail="Insufficient funds")
 
     await users_col.update_one(
-        {"_id": ObjectId(user_id)},
+        {"_id": current_user["_id"]},
         {"$inc": {"balance": -amount}}
     )
 
     await tx_col.insert_one({
-        "user_id": user_id,
+        "user_id": str(current_user["_id"]),
         "type": "withdraw",
         "amount": amount,
         "timestamp": datetime.utcnow()
@@ -164,8 +128,16 @@ async def withdraw(amount: float, user_id: str = Depends(get_current_user)):
 
 
 @app.get("/transactions")
-async def transactions(user_id: str = Depends(get_current_user)):
-    cursor = tx_col.find({"user_id": user_id}).sort("timestamp", -1)
+async def transactions(current_user=Depends(get_current_user)):
+    cursor = tx_col.find(
+        {"user_id": str(current_user["_id"])}
+    ).sort("timestamp", -1)
+
     tx_list = await cursor.to_list(length=100)
 
+    # Convert ObjectId to string
+    for tx in tx_list:
+        tx["_id"] = str(tx["_id"])
+
     return tx_list
+

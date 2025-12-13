@@ -1,10 +1,12 @@
 from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import APIKeyHeader
+from bson import ObjectId
+from database import users_col
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 
-bearer_scheme = HTTPBearer()
+api_key_scheme = APIKeyHeader(name="X-API-Key", auto_error=True)
 pwd_context = CryptContext(
     schemes=["argon2"],
     deprecated="auto"
@@ -28,16 +30,26 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 # Dependency to get current user from token
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
-    token = credentials.credentials  # Extract raw token
+from fastapi.security import APIKeyHeader
 
+api_key_scheme = APIKeyHeader(name="X-API-Key", auto_error=True)
+
+async def get_current_user(api_key: str = Depends(api_key_scheme)):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("user_id")
+        payload = jwt.decode(api_key, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")  # must match token creation
 
-        if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        return user_id
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Not authenticated")
+
+        user = await users_col.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        return user
 
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+
+
