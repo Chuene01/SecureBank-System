@@ -377,7 +377,7 @@ kubectl logs -l app=banking-backend
 
 ---
 
-**Prepared by:** HOREB TECHNOLOGY  
+**Prepared by:** Ntando, Tumelo, Kagiso & Florence
 **Submission Date:** December 13, 2025  
 **Week:** 3 - CI/CD & Deployment Automation  
 **Status:** Infrastructure Complete, Pending Deployment Logs
