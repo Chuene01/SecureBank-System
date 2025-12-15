@@ -66,12 +66,12 @@ jobs:
       
       - name: Test Docker Compose
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 15
-          docker-compose ps
+          docker compose ps
           # Test backend health
           curl -f http://localhost:8000/ || echo "Backend not responding"
-          docker-compose down
+          docker compose down
 
   # Job 3: Push to Container Registry (only on main/dev)
   push:
