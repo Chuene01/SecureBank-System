@@ -32,21 +32,17 @@
 5. **rollback**: Automatic rollback on failure
 
 ### 2. Automated Build + Deploy Logs from GitHub Actions 
+**Status:** COMPLETE 
 
-**Status:** PENDING (Requires push to GitHub)
+**Pipeline Run:** Workflow #4 - Success  
+**Date:** December 15, 2025  
+**Commit:** 96113dd  
+**Duration:** ~2 minutes  
 
-**Next Steps:**
-- Push code to GitHub
-- Trigger pipeline by pushing to main/dev branch
-- Capture workflow logs from GitHub Actions
-- Save logs to `my-devops/deliverables/week3/logs/`
-
-**Expected Logs:**
-- Build logs
-- Test results
-- Docker image push confirmations
-- Kubernetes deployment status
-- Rollback logs (if applicable)
+**Logs Available:**
+- Complete workflow logs (downloaded)
+- Build job logs (screenshot)
+- Test job logs (screenshot)
 
 ### 3. Kubernetes Manifests for Services, Pods, and Deployments 
 
