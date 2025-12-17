@@ -192,7 +192,7 @@ python -m http.server 3000
 
 ---
 
-## 🔧 Key Fixes & Improvements Implemented
+##  Key Fixes & Improvements Implemented
 
 -  Login now verifies passwords correctly
 -  Dashboard shows logged-in username & email
