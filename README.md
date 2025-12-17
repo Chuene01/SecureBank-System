@@ -92,7 +92,7 @@ This project simulates the build of a real-world banking platform while applying
 - Authentication & transactions
 - Local state persistence
 
-### Week 2 – Testing & Containerization (Current)
+### Week 2 – Testing & Containerization 
 - Docker & Docker Compose
 - API testing (Postman)
 - CI pipeline setup
