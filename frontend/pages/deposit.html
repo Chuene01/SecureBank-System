@@ -354,6 +354,8 @@
         </div>
     </div>
 
+<script src="../js/config.js"></script>
+
     <script>
         // DOM Elements
         const modalOverlay = document.getElementById('modalOverlay');
@@ -458,64 +460,48 @@
             const rawValue = amountInput.value.replace(/[^\d.]/g, '');
             const amount = parseFloat(rawValue);
 
-            let balance = Number(localStorage.getItem("balance")) || 0;
-            let newBalance = balance + amount;
-            // save updated balance
-            localStorage.setItem("balance", newBalance);
-
-            // update balance locally
-            let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-
-            transactions.push({
-                type: "deposit",
-                amount: amount,
-                description: "Deposit",
-                date: new Date(),
-                balance: newBalance, // save updated balance
-                id: "TX" + Date.now().toString().slice(-6)
-            });
-            localStorage.setItem("transactions", JSON.stringify(transactions));
-
             if (isNaN(amount) || amount < 10 || amount > 10000) {
                 alert("Invalid deposit amount");
                 return;
             }
 
-            // Read username saved from login
-            const username = localStorage.getItem("username");
-
-            if (!username) {
-                alert("Error: No user logged in.");
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                alert("You are not logged in.");
+                window.location.href = "login.html";
                 return;
             }
 
-            // Send deposit to backend
             try {
-                const res = await fetch("http://127.0.0.1:8000/deposit", {
+                const res = await fetch(`${API_BASE_URL}/deposit`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        username: username,
-                        amount: amount
-                    })
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ amount })
                 });
 
                 const data = await res.json();
-                console.log("Backend response:", data);
 
-                if (res.ok) {
-                    alert(`Deposit of R${amount.toFixed(2)} successful!`);
-                    window.location.href = "dashboard.html"; // redirect
-                } else {
-                    alert("Deposit failed: " + (data.error || data.detail));
+                if (!res.ok) {
+                    alert(data.detail || "Deposit failed");
+                    return;
                 }
+
+                // Backend is source of truth
+                if (data.new_balance !== undefined) {
+                    localStorage.setItem("balance", data.new_balance);
+                }
+
+                alert(`Deposit of R${amount.toFixed(2)} successful!`);
+                window.location.href = "dashboard.html";
 
             } catch (error) {
                 console.error(error);
                 alert("Could not connect to server.");
             }
         });
-
 
         // Handle close button
         closeButton.addEventListener('click', () => {

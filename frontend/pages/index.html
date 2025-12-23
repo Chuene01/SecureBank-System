@@ -724,5 +724,12 @@
             });
         });
     </script>
+
+    <script>
+    const token = localStorage.getItem("access_token");
+    if (token) {
+        window.location.href = "dashboard.html";
+    }
+    </script>
 </body>
 </html>

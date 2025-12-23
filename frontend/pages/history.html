@@ -241,13 +241,46 @@
     </table>
 </div>
 
+<script src="../js/config.js"></script>
+
 <script>
-// To load real stored data
-const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-// Load stored balance
-let balance = Number(localStorage.getItem("balance")) || 0;
-// Reverse for newest first
-transactions.reverse();
+let transactions = [];
+let balance = 0;
+
+async function loadTransactionHistory() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        alert("You are not logged in.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/transactions`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.detail || "Failed to load transactions");
+            return;
+        }
+
+        transactions = data.transactions || [];
+        balance = data.balance || 0;
+
+        // newest first
+        transactions.reverse();
+        renderTable(transactions);
+
+    } catch (err) {
+        console.error(err);
+        alert("Server error loading transactions");
+    }
+}
 
 function renderTable(list) {
     const tbody = document.getElementById("tbody");
@@ -316,10 +349,10 @@ function clearFilters() {
     document.getElementById("from-date").value = "";
     document.getElementById("to-date").value = "";
 
-    renderTable(transactions);
+    loadTransactionHistory();
 }
 
-renderTable(transactions);
+loadTransactionHistory();
 </script>
 
 <script>

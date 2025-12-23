@@ -109,6 +109,8 @@
 
 </div>
 
+<script src="../js/config.js"></script>
+
 <script>
 function logout() {
     localStorage.clear();
@@ -117,14 +119,46 @@ function logout() {
 </script>
 
 <script>
+let balance = 0;
+let transactions = [];
+
 function formatCurrency(amount) {
     return "R" + amount.toLocaleString(undefined, { minimumFractionDigits: 2 });
 }
 
-let balance = Number(localStorage.getItem("balance")) || 0;
+async function loadDashboardData() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
 
-// update balance display
-document.getElementById("dashboardBalance").innerText = formatCurrency(balance);
+    try {
+        const res = await fetch(`${API_BASE_URL}/dashboard`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.detail || "Failed to load dashboard data");
+            return;
+        }
+
+        balance = data.balance || 0;
+        transactions = data.transactions || [];
+
+        updateBalance();
+        updateRecentTransactions();
+        updateStats();
+
+    } catch (err) {
+        console.error(err);
+        alert("Server error loading dashboard");
+    }
+}
 </script>
 
 <script>
@@ -132,46 +166,52 @@ function formatCurrency(amount) {
     return "R" + amount.toLocaleString(undefined, { minimumFractionDigits: 2 });
 }
 
-// Get stored transactions
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+function updateBalance() {
+    document.getElementById("dashboardBalance").innerText =
+        formatCurrency(balance);
+}
+</script>
 
-// Reverse for latest first
-transactions.reverse();
+<script>
+function updateStats() {
+    const totalDeposits = transactions
+        .filter(t => t.type === "deposit")
+        .reduce((sum, t) => sum + t.amount, 0);
 
-// ============= UPDATE RECENT TRANSACTIONS =============
-let recentBody = document.getElementById("recentBody");
-recentBody.innerHTML = "";
+    const totalWithdrawals = transactions
+        .filter(t => t.type === "withdrawal")
+        .reduce((sum, t) => sum + t.amount, 0);
 
-let recent = transactions.slice(0, 2);
+    document.getElementById("totalCount").innerText = transactions.length;
+    document.getElementById("totalDeposits").innerText = formatCurrency(totalDeposits);
+    document.getElementById("totalWithdrawals").innerText = formatCurrency(totalWithdrawals);
+}
+</script>
 
-recent.forEach(t => {
-    let row = document.createElement("tr");
-    let dateObj = new Date(t.date);
+<script>
+function updateRecentTransactions() {
+    const recentBody = document.getElementById("recentBody");
+    recentBody.innerHTML = "";
 
-    row.innerHTML = `
-        <td>${dateObj.toLocaleDateString()}, ${dateObj.toLocaleTimeString()}</td>
-        <td><span class="type-badge">${t.type}</span></td>
-        <td>${t.description}</td>
-        <td class="${t.type === 'deposit' ? 'green-text' : 'red-text'}">
-            ${t.type === 'deposit' ? '+' : '-'}${formatCurrency(t.amount)}
-        </td>
-    `;
+    const recent = [...transactions]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 2);
 
-    recentBody.appendChild(row);
-});
+    recent.forEach(t => {
+        const row = document.createElement("tr");
+        const dateObj = new Date(t.date);
 
-// ============= UPDATE TOTAL STATS =============
-let totalDeposits = transactions
-    .filter(t => t.type === "deposit")
-    .reduce((sum, t) => sum + t.amount, 0);
-
-let totalWithdrawals = transactions
-    .filter(t => t.type === "withdrawal")
-    .reduce((sum, t) => sum + t.amount, 0);
-
-document.getElementById("totalCount").innerText = transactions.length;
-document.getElementById("totalDeposits").innerText = formatCurrency(totalDeposits);
-document.getElementById("totalWithdrawals").innerText = formatCurrency(totalWithdrawals);
+        row.innerHTML = `
+            <td>${dateObj.toLocaleDateString()}, ${dateObj.toLocaleTimeString()}</td>
+            <td><span class="type-badge">${t.type}</span></td>
+            <td>${t.description}</td>
+            <td class="${t.type === 'deposit' ? 'green-text' : 'red-text'}">
+                ${t.type === 'deposit' ? '+' : '-'}${formatCurrency(t.amount)}
+            </td>
+        `;
+        recentBody.appendChild(row);
+    });
+}
 </script>
 
 <script>
@@ -194,27 +234,19 @@ document.getElementById("toggleBalance").addEventListener("click", () => {
 </script>
 
 <script>
-// Read stored data
-const username = localStorage.getItem("username");
-const storedEmail = localStorage.getItem("email");
-
-// If user is not logged in, redirect
-if (!username) {
+const token = localStorage.getItem("access_token");
+if (!token) {
     window.location.href = "login.html";
 }
 
-// Display username
-document.getElementById("displayUsername").innerText = username;
+const username = localStorage.getItem("username");
+const storedEmail = localStorage.getItem("email");
 
-// Display initials
+document.getElementById("displayUsername").innerText = username;
 document.getElementById("profileInitials").innerText =
     username.substring(0, 2).toUpperCase();
-
-// Display email (fallback if missing)
 document.getElementById("displayEmail").innerText =
-    storedEmail ? storedEmail : "Not Available";
-
-// Dynamic account number
+    storedEmail || "Not Available";
 document.getElementById("accountNumber").innerText =
     "0000 0000 " + username;
 </script>
@@ -257,6 +289,11 @@ document.getElementById("accountNumber").innerText =
 	}
 	// ]]>
 </script>
+
+<script>
+loadDashboardData();
+</script>
+
 </body>
 </html>
 

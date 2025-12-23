@@ -216,6 +216,9 @@
         <button class="confirm-btn" onclick="confirmWithdrawal()">Confirm</button>
     </div>
 </div>
+
+<script src="../js/config.js"></script>
+
 <script>
 let balance = Number(localStorage.getItem("balance")) || 0;
 
@@ -278,7 +281,7 @@ function updateValues() {
     }
 
     document.getElementById("remainingBalance").innerText =
-    "R" + storedBalance.toLocaleString();
+    "R" + remaining.toLocaleString();
 }
 
 function generateId() {
@@ -287,51 +290,51 @@ function generateId() {
 </script>
 
 <script>
-function confirmWithdrawal() {
-    let amount = Number(document.getElementById("amountInput").value);
+async function confirmWithdrawal() {
+    const amount = Number(document.getElementById("amountInput").value);
 
-    // Validate input
     if (amount <= 0) {
         alert("Enter a valid withdrawal amount.");
         return;
     }
 
-    // Get stored balance
-    let storedBalance = Number(localStorage.getItem("balance"));
-    if (isNaN(storedBalance)) {
-        storedBalance = 0;
-    }
-
-    // Ensure funds available
-    if (amount > storedBalance) {
-        alert("Insufficient funds.");
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        alert("You are not logged in.");
+        window.location.href = "login.html";
         return;
     }
 
-    // New balance
-    let newBalance = storedBalance - amount;
+    try {
+        const response = await fetch(`${API_BASE_URL}/withdraw`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ amount })
+        });
 
-    // Update balance
-    localStorage.setItem("balance", newBalance);
+        const data = await response.json();
 
-    // Save transaction history
-    let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    transactions.push({
-        type: "withdrawal",
-        description: "Withdrawal",
-        amount: amount,
-        balance: newBalance,
-        date: new Date(),
-        id: "TX" + Date.now().toString().slice(-6)
-    });
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+        if (!response.ok) {
+            alert(data.detail || "Withdrawal failed");
+            return;
+        }
 
-    alert("Withdrawal successful.");
+        // Update UI cache (optional but good UX)
+        localStorage.setItem("balance", data.new_balance);
 
-    // Redirect back to dashboard
-    window.location.href = "dashboard.html";
+        alert("Withdrawal successful.");
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("Server error. Please try again.");
+    }
 }
 </script>
+
 
 </body>
 </html>
