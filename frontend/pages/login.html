@@ -250,7 +250,7 @@
 
   <script src="../js/config.js"></script>
 
-  <script>
+<script>
 (function () {
     const form = document.getElementById("loginForm");
     const usernameInput = document.getElementById("username");
@@ -299,7 +299,12 @@
 
                 window.location.href = "dashboard.html";
             } else {
-                alert(data.detail || data.error || "Login failed");
+                const message =
+                    typeof data.detail === "string"
+                        ? data.detail
+                        : "Invalid username or password";
+
+                alert(message);
                 loginBtn.disabled = false;
                 loginBtn.textContent = "Sign In";
             }
