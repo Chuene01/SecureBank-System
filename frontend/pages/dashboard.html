@@ -36,7 +36,6 @@
         <div>
             <p class="balance-title">Available Balance</p>
             <p class="balance-amount" id="dashboardBalance">R0.00</p>
-            <p class="account-label">Account: •••• •••• demo</p>
         </div>
 
         <span class="eye-icon" id="toggleBalance">👁️</span>
@@ -200,25 +199,47 @@ document.getElementById("toggleBalance").addEventListener("click", () => {
 </script>
 
 <script>
-const token = localStorage.getItem("access_token");
-if (!token) {
-    window.location.href = "login.html";
+async function loadUserProfile() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/profile`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch profile");
+        }
+
+        const user = await res.json();
+
+        // Header
+        document.getElementById("displayUsername").innerText = user.username;
+        document.getElementById("profileInitials").innerText =
+            user.username.substring(0, 2).toUpperCase();
+
+        // Account info section
+        document.getElementById("displayEmail").innerText = user.email;
+        document.getElementById("accountNumber").innerText =
+            "0000 0000 " + user.username.toUpperCase();
+
+    } catch (err) {
+        console.error(err);
+        alert("Session expired. Please log in again.");
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
 }
 
-const email = localStorage.getItem("email");
-
-if (email) {
-    document.getElementById("displayUsername").innerText = email;
-    document.getElementById("profileInitials").innerText =
-        email.substring(0, 2).toUpperCase();
-    document.getElementById("accountNumber").innerText =
-        "0000 0000 " + email.substring(0, 4).toUpperCase();
-} else {
-    document.getElementById("displayUsername").innerText = "User";
-    document.getElementById("profileInitials").innerText = "U";
-}
-document.getElementById("displayEmail").innerText =
-    email || "Not Available";
+// Load everything
+loadUserProfile();
+loadDashboardData();
 </script>
 
 <!-- Code injected by live-server -->
