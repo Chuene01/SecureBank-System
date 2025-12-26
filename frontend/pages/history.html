@@ -265,20 +265,23 @@ async function loadTransactionHistory() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.detail || "Failed to load transactions");
-            return;
-        }
+        console.error(data.detail || "Failed to load transactions");
+
+        // force re-login if token is invalid
+        localStorage.removeItem("access_token");
+        window.location.href = "login.html";
+        return;
+       }
 
         transactions = data.transactions || [];
-        balance = data.balance || 0;
+        balance = data.balance ?? 0;
 
         // newest first
         transactions.reverse();
         renderTable(transactions);
 
     } catch (err) {
-        console.error(err);
-        alert("Server error loading transactions");
+      console.error("Server error loading transactions");
     }
 }
 
@@ -286,8 +289,33 @@ function renderTable(list) {
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
+    if (list.length === 0) {
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="6" style="text-align:center; opacity:0.7">
+                No transactions yet
+            </td>
+        </tr>
+    `;
+
+    document.getElementById("balance").innerText =
+        "R0.00";
+
+    document.getElementById("total-transactions").innerText = "0";
+    document.getElementById("showing-text").innerText =
+        "Showing 0 of 0 transactions";
+    document.getElementById("showing-count").innerText = "0 of 0";
+
+    return;
+}
+
+    let runningBalance = 0;
+
     list.forEach(t => {
         const tr = document.createElement("tr");
+
+        if (t.type === "deposit") runningBalance += t.amount;
+        else runningBalance -= t.amount;
 
         tr.innerHTML = `
             <td>${new Date(t.date).toLocaleDateString()}<br><span style="opacity:0.7">${new Date(t.date).toLocaleTimeString()}</span></td>
@@ -295,7 +323,7 @@ function renderTable(list) {
             <td>${t.description}</td>
             <td class="${t.type === 'deposit' ? 'amount-positive' : 'amount-negative'}">
             ${t.type === 'deposit' ? '+' : '-'}R${t.amount.toLocaleString()}</td>
-            <td>R${t.balance.toLocaleString()}</td>
+            <td>R${runningBalance.toLocaleString()}</td>
             <td>${t.id}</td>
         `;
 
