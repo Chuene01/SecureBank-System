@@ -289,9 +289,10 @@
 
             const data = await res.json();
 
-            if (res.ok && data.token) {
-                localStorage.setItem("access_token", data.token);
-                localStorage.setItem("username", data.username);
+            // so the user successfully logs in
+            if (res.ok && data.access_token) {
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("username", username);
 
                 if (data.email) {
                     localStorage.setItem("email", data.email);
@@ -299,12 +300,7 @@
 
                 window.location.href = "dashboard.html";
             } else {
-                const message =
-                    typeof data.detail === "string"
-                        ? data.detail
-                        : "Invalid username or password";
-
-                alert(message);
+                alert(data.detail || "Invalid username or password");
                 loginBtn.disabled = false;
                 loginBtn.textContent = "Sign In";
             }
@@ -317,7 +313,6 @@
     };
 })();
 </script>
-
 
 </body>
 </html>
