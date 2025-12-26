@@ -269,7 +269,7 @@
     form.onsubmit = async (e) => {
         e.preventDefault();
 
-        const username = usernameInput.value.trim();
+        const email = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
         if (!username || !password) {
@@ -284,7 +284,7 @@
             const res = await fetch(`${API_BASE_URL}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ email, password })
             });
 
             const data = await res.json();
