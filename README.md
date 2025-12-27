@@ -28,7 +28,7 @@ This project simulates the build of a real-world banking platform while applying
 
 | Name | Role |
 |------|------|
-| **Ntando (Sekani-27)** | **DevOps Lead** / Project Manager |
+| Ntando| DevOps Lead / Project Manager |
 | Kagiso | Frontend Lead |
 | Chuene | Backend Lead |
 | Elona | Frontend / Backend Developer |
