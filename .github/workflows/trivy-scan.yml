@@ -119,39 +119,94 @@ jobs:
           echo "- GitHub Security tab: https://github.com/${{ github.repository }}/security/code-scanning"
           echo "- Download reports from Artifacts section"
 
-
-
-
-    notify-teams:
+  notify-teams:
     name: Notify Microsoft Teams
     needs: [scan-backend, scan-frontend]
     runs-on: ubuntu-latest
     if: always()
 
     steps:
-      - name: Send CI status to Teams via Power Automate
+      - name: Determine Overall Status
+        id: status
         run: |
-          STATUS_BACKEND="${{ needs.scan-backend.result }}"
-          STATUS_FRONTEND="${{ needs.scan-frontend.result }}"
-
-          if [[ "$STATUS_BACKEND" == "success" && "$STATUS_FRONTEND" == "success" ]]; then
-            STATUS="SUCCESS"
-            EMOJI="✅"
+          BACKEND="${{ needs.scan-backend.result }}"
+          FRONTEND="${{ needs.scan-frontend.result }}"
+          
+          if [[ "$BACKEND" == "success" && "$FRONTEND" == "success" ]]; then
+            echo "status=SUCCESS" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "color=28a745" >> $GITHUB_OUTPUT
+          elif [[ "$BACKEND" == "failure" || "$FRONTEND" == "failure" ]]; then
+            echo "status=FAILURE" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "color=dc3545" >> $GITHUB_OUTPUT
           else
-            STATUS="FAILURE"
-            EMOJI="🚨"
+            echo "status=CANCELLED" >> $GITHUB_OUTPUT
+            echo "emoji=⚠️" >> $GITHUB_OUTPUT
+            echo "color=ffc107" >> $GITHUB_OUTPUT
           fi
 
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"title\": \"${EMOJI} Banking-App CI Security Scan\",
-              \"status\": \"$STATUS\",
-              \"repository\": \"${{ github.repository }}\",
-              \"branch\": \"${{ github.ref_name }}\",
-              \"backend_scan\": \"$STATUS_BACKEND\",
-              \"frontend_scan\": \"$STATUS_FRONTEND\",
-              \"run_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-            }" \
-            ${{ secrets.TEAMS_WEBHOOK_URL }}
-
+      - name: Send Status to Microsoft Teams
+        run: |
+          curl -H 'Content-Type: application/json' -d '{
+            "@type": "MessageCard",
+            "@context": "https://schema.org/extensions",
+            "summary": "Trivy Security Scan - ${{ steps.status.outputs.status }}",
+            "themeColor": "${{ steps.status.outputs.color }}",
+            "title": "${{ steps.status.outputs.emoji }} OpenBank Security Scan - ${{ steps.status.outputs.status }}",
+            "sections": [
+              {
+                "activityTitle": "Container Security Scan Results",
+                "activitySubtitle": "Trivy vulnerability scanning completed",
+                "facts": [
+                  {
+                    "name": "Repository:",
+                    "value": "${{ github.repository }}"
+                  },
+                  {
+                    "name": "Branch:",
+                    "value": "${{ github.ref_name }}"
+                  },
+                  {
+                    "name": "Backend Scan:",
+                    "value": "${{ needs.scan-backend.result }}"
+                  },
+                  {
+                    "name": "Frontend Scan:",
+                    "value": "${{ needs.scan-frontend.result }}"
+                  },
+                  {
+                    "name": "Triggered by:",
+                    "value": "${{ github.actor }}"
+                  },
+                  {
+                    "name": "Event:",
+                    "value": "${{ github.event_name }}"
+                  }
+                ],
+                "text": "Security vulnerability scan completed. Check GitHub Security tab for detailed findings."
+              }
+            ],
+            "potentialAction": [
+              {
+                "@type": "OpenUri",
+                "name": "View Workflow Run",
+                "targets": [
+                  {
+                    "os": "default",
+                    "uri": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              },
+              {
+                "@type": "OpenUri",
+                "name": "View Security Alerts",
+                "targets": [
+                  {
+                    "os": "default",
+                    "uri": "https://github.com/${{ github.repository }}/security/code-scanning"
+                  }
+                ]
+              }
+            ]
+          }' '${{ secrets.TEAMS_WEBHOOK_URL }}' || echo " Failed to send Teams notification"
