@@ -51,7 +51,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       
       - name: Upload Backend report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-backend-report
           path: trivy-backend-report.txt
@@ -96,7 +96,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       
       - name: Upload Frontend report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-frontend-report
           path: trivy-frontend-report.txt
@@ -118,3 +118,5 @@ jobs:
           echo " View detailed results:"
           echo "- GitHub Security tab: https://github.com/${{ github.repository }}/security/code-scanning"
           echo "- Download reports from Artifacts section"
+
+         
