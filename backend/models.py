@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class User(BaseModel):
-    username: str
+    username: str = Field(..., min_length=1)
     email: str
-    password: str
+    password: str = Field(..., min_length=1, max_length=72)
 
 class Login(BaseModel):
     username: str
@@ -16,4 +16,3 @@ class Deposit(BaseModel):
 class Withdraw(BaseModel):
     username: str
     amount: float
-

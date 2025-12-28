@@ -4,7 +4,7 @@ A cloud-native banking application built as part of a FullStack and DevOps-focus
 
 ---
 
-## 📋 Project Vision
+##  Project Vision
 
 This project simulates the build of a real-world banking platform while applying:
 
@@ -18,7 +18,7 @@ This project simulates the build of a real-world banking platform while applying
 
 ---
 
-## 👥 Team
+##  Team
 
 | Name | Role |
 |------|------|
@@ -35,7 +35,7 @@ This project simulates the build of a real-world banking platform while applying
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 - HTML5
@@ -64,16 +64,16 @@ This project simulates the build of a real-world banking platform while applying
 
 ---
 
-## ✨ Core Features
+##  Core Features
 
 ### Banking Functionality
-- ✅ User Registration & Login
-- ✅ JWT Authentication
-- ✅ Account Dashboard
-- ✅ Deposit Money
-- ✅ Withdraw Money (with balance validation)
-- ✅ Transaction History
-- ✅ Responsive UI
+-  User Registration & Login
+-  JWT Authentication
+-  Account Dashboard
+-  Deposit Money
+-  Withdraw Money (with balance validation)
+-  Transaction History
+-  Responsive UI
 
 ### Security
 - Password hashing
@@ -83,9 +83,9 @@ This project simulates the build of a real-world banking platform while applying
 
 ---
 
-## 📅 Sprint Timeline
+##  Sprint Timeline
 
-### Week 1 – Planning & Core Build ✅
+### Week 1 – Planning & Core Build 
 - Agile board & user stories
 - Frontend pages
 - Backend API
@@ -110,7 +110,7 @@ This project simulates the build of a real-world banking platform while applying
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 project-folder/
@@ -156,7 +156,7 @@ project-folder/
 
 ---
 
-## 🚀 Running the Application (Local)
+##  Running the Application (Local)
 
 ### Prerequisites
 - Python 3.9+
@@ -166,14 +166,14 @@ project-folder/
 
 ### 1. Start the Backend
 
-⚠️ **Important:** Backend must be run from inside the `backend/` folder.
+ **Important:** Backend must be run from inside the `backend/` folder.
 
 ```bash
 cd backend
 uvicorn main:app --reload
 ```
 
-✅ **Backend will run at:**
+ **Backend will run at:**
 - Application: http://127.0.0.1:8000
 - API Docs: http://127.0.0.1:8000/docs
 
@@ -188,34 +188,34 @@ cd frontend
 python -m http.server 3000
 ```
 
-✅ **Frontend runs at:** http://localhost:3000
+ **Frontend runs at:** http://localhost:3000
 
 ---
 
-## 🔧 Key Fixes & Improvements Implemented
+##  Key Fixes & Improvements Implemented
 
-- ✅ Login now verifies passwords correctly
-- ✅ Dashboard shows logged-in username & email
-- ✅ Dynamic account number generation
-- ✅ Deposit & withdraw pages sync balances
-- ✅ Overdraft prevention enforced
-- ✅ Deposits & withdrawals logged correctly
-- ✅ Transaction history fully synced
-- ✅ Improved email validation rules
+-  Login now verifies passwords correctly
+-  Dashboard shows logged-in username & email
+-  Dynamic account number generation
+-  Deposit & withdraw pages sync balances
+-  Overdraft prevention enforced
+-  Deposits & withdrawals logged correctly
+-  Transaction history fully synced
+-  Improved email validation rules
 
 ---
 
-## 💾 State Persistence
+##  State Persistence
 
 - User session stored in `localStorage`
 - Balance persists during session navigation
 
-⚠️ **Note:** Balance resets on browser clear or backend restart  
-➡️ MongoDB persistence planned
+ **Note:** Balance resets on browser clear or backend restart  
+ MongoDB persistence planned
 
 ---
 
-## 🐳 Docker (Week 2)
+##  Docker (Week 2)
 
 ```bash
 docker-compose up --build
@@ -228,7 +228,7 @@ docker-compose up --build
 
 ---
 
-## 🔌 API Overview
+##  API Overview
 
 ### Auth
 
@@ -247,7 +247,7 @@ docker-compose up --build
 
 ---
 
-## 🔄 Development Workflow
+##  Development Workflow
 
 1. Branch from `develop`
 2. Commit clearly (`feat: add login validation`)
@@ -258,7 +258,7 @@ docker-compose up --build
 
 ---
 
-## 📚 Learning Outcomes
+##  Learning Outcomes
 
 This project demonstrates:
 
@@ -271,7 +271,7 @@ This project demonstrates:
 
 ---
 
-## 💬 Support
+##  Support
 
 - Open a GitHub issue
 - Contact Ntando (DevOps)
@@ -279,7 +279,7 @@ This project demonstrates:
 
 ---
 
-## 📄 License
+##  License
 
 Educational project – DevOps & Cloud Engineering Simulation
 
@@ -287,3 +287,4 @@ Educational project – DevOps & Cloud Engineering Simulation
 
 **Last Updated:** November 2025
 
+# Week 3 Complete
