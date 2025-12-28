@@ -119,4 +119,39 @@ jobs:
           echo "- GitHub Security tab: https://github.com/${{ github.repository }}/security/code-scanning"
           echo "- Download reports from Artifacts section"
 
-         
+
+
+
+    notify-teams:
+    name: Notify Microsoft Teams
+    needs: [scan-backend, scan-frontend]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Send CI status to Teams via Power Automate
+        run: |
+          STATUS_BACKEND="${{ needs.scan-backend.result }}"
+          STATUS_FRONTEND="${{ needs.scan-frontend.result }}"
+
+          if [[ "$STATUS_BACKEND" == "success" && "$STATUS_FRONTEND" == "success" ]]; then
+            STATUS="SUCCESS"
+            EMOJI="✅"
+          else
+            STATUS="FAILURE"
+            EMOJI="🚨"
+          fi
+
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"title\": \"${EMOJI} Banking-App CI Security Scan\",
+              \"status\": \"$STATUS\",
+              \"repository\": \"${{ github.repository }}\",
+              \"branch\": \"${{ github.ref_name }}\",
+              \"backend_scan\": \"$STATUS_BACKEND\",
+              \"frontend_scan\": \"$STATUS_FRONTEND\",
+              \"run_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }" \
+            ${{ secrets.TEAMS_WEBHOOK_URL }}
+
