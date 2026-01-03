@@ -485,13 +485,28 @@
                 const data = await res.json();
 
                 if (!res.ok) {
-                    alert(data.detail || "Deposit failed");
+                    const message =
+                        typeof data.detail === "string"
+                            ? data.detail
+                            : typeof data.message === "string"
+                            ? data.message
+                            : "Deposit failed";
+
+                    alert(message);
                     return;
-                }
+      }
 
                 // Backend is source of truth
-                if (data.new_balance !== undefined) {
-                    localStorage.setItem("balance", data.new_balance);
+                // Refresh balance from backend (source of truth)
+                const balanceRes = await fetch(`${API_BASE_URL}/balance`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (balanceRes.ok) {
+                    const balanceData = await balanceRes.json();
+                    localStorage.setItem("balance", balanceData.balance);
                 }
 
                 alert(`Deposit of R${amount.toFixed(2)} successful!`);
