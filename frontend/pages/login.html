@@ -214,12 +214,13 @@
 
     <form id="loginForm" class="form" action="/login" method="post">
 
-      <div class="field">
-        <label class="label" for="username">Username</label>
-        <div class="input-with-icon">
-          <span class="icon-left">✉️</span>
-          <input id="username" name="username" type="text" placeholder="Enter your username">
+    <div class="field">
+      <label class="label" for="email">Email</label>
+      <div class="input-with-icon">
+        <span class="icon-left">✉️</span>
+        <input id="email" name="email" type="email" placeholder="Enter your email" required>
       </div>
+    </div>
 
       <div class="field">
         <label class="label" for="password">Password</label>
@@ -253,7 +254,7 @@
 <script>
 (function () {
     const form = document.getElementById("loginForm");
-    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
     const togglePw = document.getElementById("togglePw");
     const loginBtn = document.getElementById("loginBtn");
@@ -269,11 +270,11 @@
     form.onsubmit = async (e) => {
         e.preventDefault();
 
-        const email = usernameInput.value.trim();
+        const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        if (!username || !password) {
-            alert("Please enter both username and password");
+        if (!email || !password) {
+            alert("Please enter both email and password");
             return;
         }
 
@@ -289,18 +290,15 @@
 
             const data = await res.json();
 
-            // so the user successfully logs in
             if (res.ok && data.access_token) {
                 localStorage.setItem("access_token", data.access_token);
-                localStorage.setItem("username", username);
 
-                if (data.email) {
-                    localStorage.setItem("email", data.email);
-                }
+                // Email is known at login time
+                localStorage.setItem("email", email);
 
                 window.location.href = "dashboard.html";
             } else {
-                alert(data.detail || "Invalid username or password");
+                alert(data.detail || "Invalid email or password");
                 loginBtn.disabled = false;
                 loginBtn.textContent = "Sign In";
             }
