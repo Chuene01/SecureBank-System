@@ -4,7 +4,7 @@ from models import User, Login, Deposit, Withdraw
 from crud import create_user, get_user, record_transaction, get_user_transactions
 from auth_utils import hash_password, verify_password, create_access_token, get_current_user
 from database import users_col, tx_col
-from schemas import LoginRequest
+from schemas import LoginRequest, DepositRequest
 from datetime import datetime
 from bson import ObjectId
 
@@ -84,7 +84,12 @@ async def get_balance(current_user=Depends(get_current_user)):
 
 
 @app.post("/deposit")
-async def deposit(amount: float, current_user=Depends(get_current_user)):
+async def deposit(
+    data: DepositRequest,
+    current_user=Depends(get_current_user)
+):
+    amount = data.amount
+
     if amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be positive")
 
@@ -100,8 +105,10 @@ async def deposit(amount: float, current_user=Depends(get_current_user)):
         "timestamp": datetime.utcnow()
     })
 
-    return {"message": "Deposit successful", "amount": amount}
-
+    return {
+        "message": "Deposit successful",
+        "new_balance": current_user["balance"] + amount
+    }
 
 
 @app.post("/withdraw")
