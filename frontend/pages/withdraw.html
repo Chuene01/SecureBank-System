@@ -291,9 +291,10 @@ function generateId() {
 
 <script>
 async function confirmWithdrawal() {
-    const amount = Number(document.getElementById("amountInput").value);
+    const rawValue = document.getElementById("amountInput").value;
+    const amount = parseFloat(rawValue.replace(/[^\d.]/g, ""));
 
-    if (amount <= 0) {
+    if (!amount || amount <= 0) {
         alert("Enter a valid withdrawal amount.");
         return;
     }
@@ -322,10 +323,7 @@ async function confirmWithdrawal() {
             return;
         }
 
-        // Update UI cache (optional but good UX)
-        localStorage.setItem("balance", data.new_balance);
-
-        alert("Withdrawal successful.");
+        alert(`Withdrawal of R${amount.toFixed(2)} successful!`);
         window.location.href = "dashboard.html";
 
     } catch (error) {
@@ -334,6 +332,7 @@ async function confirmWithdrawal() {
     }
 }
 </script>
+
 
 
 </body>
