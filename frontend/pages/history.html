@@ -250,105 +250,101 @@ let balance = 0;
 async function loadTransactionHistory() {
     const token = localStorage.getItem("access_token");
     if (!token) {
-        alert("You are not logged in.");
         window.location.href = "login.html";
         return;
     }
 
     try {
-        // 1 Fetch transactions
-        const res = await fetch(`${API_BASE_URL}/transactions`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+        // Fetch transactions
+        const txRes = await fetch(`${API_BASE_URL}/transactions`, {
+            headers: { Authorization: `Bearer ${token}` }
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error();
+        if (txRes.status === 401) throw "unauthorized";
+        const txData = await txRes.json();
+        transactions = Array.isArray(txData) ? txData : [];
 
-        transactions = Array.isArray(data) ? data : [];
-
-        // 2 Fetch balance
-        const balanceRes = await fetch(`${API_BASE_URL}/balance`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+        // Fetch balance
+        const balRes = await fetch(`${API_BASE_URL}/balance`, {
+            headers: { Authorization: `Bearer ${token}` }
         });
-        const balanceData = await balanceRes.json();
-        balance = balanceData.balance;
 
-        // 3 newest first
-        transactions.reverse();
+        if (balRes.status === 401) throw "unauthorized";
+        const balData = await balRes.json();
+        balance = balData.balance ?? 0;
+
         renderTable(transactions);
 
     } catch (err) {
         console.error(err);
-        alert("Session expired. Please log in again.");
-        localStorage.clear();
-        window.location.href = "login.html";
+        if (err === "unauthorized") {
+            alert("Session expired. Please log in again.");
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
     }
 }
-
 
 function renderTable(list) {
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
     if (list.length === 0) {
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="6" style="text-align:center; opacity:0.7">
-                No transactions yet
-            </td>
-        </tr>
-    `;
-
-    document.getElementById("balance").innerText =
-        "R0.00";
-
-    document.getElementById("total-transactions").innerText = "0";
-    document.getElementById("showing-text").innerText =
-        "Showing 0 of 0 transactions";
-    document.getElementById("showing-count").innerText = "0 of 0";
-
-    return;
-}
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center; opacity:0.7">
+                    No transactions yet
+                </td>
+            </tr>
+        `;
+        document.getElementById("balance").innerText = "R0.00";
+        document.getElementById("total-transactions").innerText = "0";
+        document.getElementById("showing-text").innerText = "Showing 0 of 0 transactions";
+        document.getElementById("showing-count").innerText = "0 of 0";
+        return;
+    }
 
     let runningBalance = balance;
-    const d = t.date ? new Date(t.date) : null;
 
     list.forEach(t => {
+        const d = t.date ? new Date(t.date) : null;
         const tr = document.createElement("tr");
 
-        if (t.type === "deposit") {
-        runningBalance -= t.amount;
-        } else {
-        runningBalance += t.amount;
-        }
-
         tr.innerHTML = `
-            <td>${d ? d.toLocaleDateString() : "-"}<br><span style="opacity:0.7">${d ? d.toLocaleTimeString() : ""}</span></td>
-            <td><span class="deposit-tag">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td>
+            <td>
+                ${d ? d.toLocaleDateString() : "-"}<br>
+                <span style="opacity:0.7">${d ? d.toLocaleTimeString() : ""}</span>
+            </td>
+            <td>
+                <span class="deposit-tag">
+                    ${t.type.charAt(0).toUpperCase() + t.type.slice(1)}
+                </span>
+            </td>
             <td>${t.description}</td>
-            <td class="${t.type === 'deposit' ? 'amount-positive' : 'amount-negative'}">
-            ${t.type === 'deposit' ? '+' : '-'}R${t.amount.toLocaleString()}</td>
+            <td class="${t.type === "deposit" ? "amount-positive" : "amount-negative"}">
+                ${t.type === "deposit" ? "+" : "-"}R${t.amount.toLocaleString()}
+            </td>
             <td>R${runningBalance.toLocaleString()}</td>
             <td>${t._id}</td>
         `;
 
+        if (t.type === "deposit") {
+            runningBalance -= t.amount;
+        } else {
+            runningBalance += t.amount;
+        }
+
         tbody.appendChild(tr);
     });
 
+    document.getElementById("balance").innerText =
+        "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+    document.getElementById("total-transactions").innerText = transactions.length;
     document.getElementById("showing-text").innerText =
         `Showing ${list.length} of ${transactions.length} transactions`;
-
     document.getElementById("showing-count").innerText =
         `${list.length} of ${transactions.length}`;
-    
-    document.getElementById("balance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
-    document.getElementById("total-transactions").innerText = transactions.length;
-
 }
 
 function applyFilters() {
@@ -359,23 +355,15 @@ function applyFilters() {
     const fromDate = document.getElementById("from-date").value;
     const toDate = document.getElementById("to-date").value;
 
-    if (type !== "all") {
-        list = list.filter(t => t.type === type);
-    }
+    if (type !== "all") list = list.filter(t => t.type === type);
+    if (fromDate) list = list.filter(t => new Date(t.date) >= new Date(fromDate));
+    if (toDate) list = list.filter(t => new Date(t.date) <= new Date(toDate));
 
-    if (fromDate) {
-        list = list.filter(t => new Date(t.date) >= new Date(fromDate));
-    }
-
-    if (toDate) {
-        list = list.filter(t => new Date(t.date) <= new Date(toDate));
-    }
-
-    if (sort === "newest") {
-        list.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else {
-        list.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
+    list.sort((a, b) =>
+        sort === "newest"
+            ? new Date(b.date) - new Date(a.date)
+            : new Date(a.date) - new Date(b.date)
+    );
 
     renderTable(list);
 }
@@ -385,12 +373,16 @@ function clearFilters() {
     document.getElementById("sort-filter").value = "newest";
     document.getElementById("from-date").value = "";
     document.getElementById("to-date").value = "";
-
-    loadTransactionHistory();
+    renderTable(transactions);
 }
+
+document.getElementById("backBtn").onclick = () => {
+    window.location.href = "dashboard.html";
+};
 
 loadTransactionHistory();
 </script>
+
 
 <script>
     document.getElementById("backBtn").addEventListener("click", () => {

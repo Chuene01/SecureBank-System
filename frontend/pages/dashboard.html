@@ -144,7 +144,7 @@ function updateStats() {
         .reduce((sum, t) => sum + t.amount, 0);
 
     const totalWithdrawals = transactions
-        .filter(t => t.type === "withdrawal")
+        .filter(t => t.type === "withdraw")
         .reduce((sum, t) => sum + t.amount, 0);
 
     document.getElementById("totalCount").innerText = transactions.length;
