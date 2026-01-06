@@ -256,34 +256,39 @@ async function loadTransactionHistory() {
     }
 
     try {
+        // 1 Fetch transactions
         const res = await fetch(`${API_BASE_URL}/transactions`, {
             headers: {
-                "Authorization": `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             }
         });
 
         const data = await res.json();
+        if (!res.ok) throw new Error();
 
-        if (!res.ok) {
-        console.error(data.detail || "Failed to load transactions");
+        transactions = Array.isArray(data) ? data : [];
 
-        // force re-login if token is invalid
-        localStorage.removeItem("access_token");
-        window.location.href = "login.html";
-        return;
-       }
+        // 2 Fetch balance
+        const balanceRes = await fetch(`${API_BASE_URL}/balance`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const balanceData = await balanceRes.json();
+        balance = balanceData.balance;
 
-        transactions = data.transactions || [];
-        balance = data.balance ?? 0;
-
-        // newest first
+        // 3 newest first
         transactions.reverse();
         renderTable(transactions);
 
     } catch (err) {
-      console.error("Server error loading transactions");
+        console.error(err);
+        alert("Session expired. Please log in again.");
+        localStorage.clear();
+        window.location.href = "login.html";
     }
 }
+
 
 function renderTable(list) {
     const tbody = document.getElementById("tbody");
@@ -309,22 +314,26 @@ function renderTable(list) {
     return;
 }
 
-    let runningBalance = 0;
+    let runningBalance = balance;
+    const d = t.date ? new Date(t.date) : null;
 
     list.forEach(t => {
         const tr = document.createElement("tr");
 
-        if (t.type === "deposit") runningBalance += t.amount;
-        else runningBalance -= t.amount;
+        if (t.type === "deposit") {
+        runningBalance -= t.amount;
+        } else {
+        runningBalance += t.amount;
+        }
 
         tr.innerHTML = `
-            <td>${new Date(t.date).toLocaleDateString()}<br><span style="opacity:0.7">${new Date(t.date).toLocaleTimeString()}</span></td>
+            <td>${d ? d.toLocaleDateString() : "-"}<br><span style="opacity:0.7">${d ? d.toLocaleTimeString() : ""}</span></td>
             <td><span class="deposit-tag">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td>
             <td>${t.description}</td>
             <td class="${t.type === 'deposit' ? 'amount-positive' : 'amount-negative'}">
             ${t.type === 'deposit' ? '+' : '-'}R${t.amount.toLocaleString()}</td>
             <td>R${runningBalance.toLocaleString()}</td>
-            <td>${t.id}</td>
+            <td>${t._id}</td>
         `;
 
         tbody.appendChild(tr);
