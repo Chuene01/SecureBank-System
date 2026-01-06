@@ -220,18 +220,50 @@
 <script src="../js/config.js"></script>
 
 <script>
-let balance = Number(localStorage.getItem("balance")) || 0;
+let balance = 0;
 
-document.getElementById("currentBalance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+async function loadWithdrawBalance() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
 
-document.getElementById("afterBalance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    try {
+        const res = await fetch(`${API_BASE_URL}/balance`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-document.getElementById("remainingBalance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        if (!res.ok) {
+            throw new Error("Failed to fetch balance");
+        }
 
+        const data = await res.json();
+        balance = data.balance;
 
+        document.getElementById("currentBalance").innerText =
+            "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+        document.getElementById("afterBalance").innerText =
+            "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+        document.getElementById("remainingBalance").innerText =
+            "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+    } catch (err) {
+        console.error(err);
+        alert("Session expired. Please log in again.");
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+
+loadWithdrawBalance();
+</script>
+
+<script>
 // Update remaining balance on load
 document.getElementById("remainingBalance").innerText =
     "R" + balance.toLocaleString();
@@ -272,7 +304,8 @@ function selectCustom() {
 
 // Recalculate remaining balance when typing
 function updateValues() {
-    let entered = Number(document.getElementById("amountInput").value);
+    let entered = parseFloat(
+    document.getElementById("amountInput").value.replace(/[^\d.]/g, "")) || 0;
     let remaining = balance - entered;
 
     if (remaining < 0) {
