@@ -199,6 +199,49 @@ document.getElementById("toggleBalance").addEventListener("click", () => {
 </script>
 
 <script>
+async function loadDashboardData() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        // 1️⃣ Fetch balance
+        const balanceRes = await fetch(`${API_BASE_URL}/balance`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!balanceRes.ok) throw new Error("Failed to fetch balance");
+        const balanceData = await balanceRes.json();
+        balance = balanceData.balance || 0;
+        updateBalance();
+
+        // 2️⃣ Fetch transactions
+        const txRes = await fetch(`${API_BASE_URL}/transactions`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!txRes.ok) throw new Error("Failed to fetch transactions");
+        transactions = await txRes.json();
+
+        updateRecentTransactions();
+        updateStats();
+
+    } catch (err) {
+        console.error(err);
+        alert("Session expired. Please log in again.");
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+</script>
+
+<script>
 async function loadUserProfile() {
     const token = localStorage.getItem("access_token");
     if (!token) {
