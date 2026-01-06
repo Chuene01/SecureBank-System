@@ -112,7 +112,12 @@ async def deposit(
 
 
 @app.post("/withdraw")
-async def withdraw(amount: float, current_user=Depends(get_current_user)):
+async def withdraw(
+    payload: DepositRequest,
+    current_user=Depends(get_current_user)
+):
+    amount = payload.amount
+
     if amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be positive")
 
@@ -131,7 +136,10 @@ async def withdraw(amount: float, current_user=Depends(get_current_user)):
         "timestamp": datetime.utcnow()
     })
 
-    return {"message": "Withdrawal successful", "amount": amount}
+    return {
+        "message": "Withdrawal successful",
+        "amount": amount
+    }
 
 
 @app.get("/transactions")
