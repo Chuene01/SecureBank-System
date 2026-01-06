@@ -264,10 +264,6 @@ loadWithdrawBalance();
 </script>
 
 <script>
-// Update remaining balance on load
-document.getElementById("remainingBalance").innerText =
-    "R" + balance.toLocaleString();
-
 // Reset active button styling
 function clearActive() {
     document.querySelectorAll(".quick-select button").forEach(btn => {
@@ -352,7 +348,12 @@ async function confirmWithdrawal() {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.detail || "Withdrawal failed");
+            const message =
+                typeof data.detail === "string"
+                    ? data.detail
+                    : "Withdrawal failed";
+
+            alert(message);
             return;
         }
 
