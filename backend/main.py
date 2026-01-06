@@ -150,9 +150,13 @@ async def transactions(current_user=Depends(get_current_user)):
 
     tx_list = await cursor.to_list(length=100)
 
-    # Convert ObjectId to string
     for tx in tx_list:
         tx["_id"] = str(tx["_id"])
+        tx["date"] = tx["timestamp"].isoformat()
+        tx["description"] = (
+            "Deposit" if tx["type"] == "deposit" else "Withdrawal"
+        )
+        del tx["timestamp"]  # ✅ must be inside the loop
 
     return tx_list
 
