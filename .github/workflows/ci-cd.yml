@@ -44,9 +44,52 @@ jobs:
           # pytest --cov=. --cov-report=xml
           echo "Backend tests would run here"
 
-  # Job 2: Build Docker Images
+  # Job 2: SonarQube Code Quality Analysis
+  sonarqube:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+      
+      - name: Run tests with coverage (optional)
+        run: |
+          cd backend
+          # Uncomment when you add pytest
+          # pip install pytest pytest-cov
+          # pytest --cov=. --cov-report=xml
+          echo "Coverage tests would run here"
+        continue-on-error: true
+      
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
+      
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+
+  # Job 3: Build Docker Images
   build:
-    needs: test-backend
+    needs: [test-backend, sonarqube]
     runs-on: ubuntu-latest
     
     steps:
@@ -58,22 +101,22 @@ jobs:
       
       - name: Build backend image
         run: |
-          docker build -t banking-backend:${{ github.sha }} ./backend
+          docker build -t banking-backend:${{ github.sha }} -f devops/docker/backend.Dockerfile ./backend
       
       - name: Build frontend image
         run: |
-          docker build -t banking-frontend:${{ github.sha }} ./frontend
+          docker build -t banking-frontend:${{ github.sha }} -f devops/docker/frontend.Dockerfile ./frontend
       
       - name: Test Docker Compose
         run: |
-          docker compose up -d
+          docker compose up -d backend frontend mongo
           sleep 15
           docker compose ps
           # Test backend health
-          curl -f http://localhost:8000/ || echo "Backend not responding"
+          curl -f http://localhost:80/ || echo "Backend not responding"
           docker compose down
 
-  # Job 3: Push to Container Registry (only on main/dev)
+  # Job 4: Push to Container Registry (only on main/dev)
   push:
     needs: build
     runs-on: ubuntu-latest
@@ -94,6 +137,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./backend
+          file: ./devops/docker/backend.Dockerfile
           push: true
           tags: |
             ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}-backend:latest
@@ -103,12 +147,13 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
+          file: ./devops/docker/frontend.Dockerfile
           push: true
           tags: |
             ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest
             ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:${{ github.sha }}
 
-  # Job 4: Deploy to Kubernetes (only on main)
+  # Job 5: Deploy to Kubernetes (only on main)
   deploy:
     needs: push
     runs-on: ubuntu-latest
@@ -140,7 +185,7 @@ jobs:
           kubectl get pods
           kubectl get services
 
-  # Job 5: Rollback on failure
+  # Job 6: Rollback on failure
   rollback:
     needs: deploy
     runs-on: ubuntu-latest
