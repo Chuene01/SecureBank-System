@@ -285,6 +285,6 @@ Educational project – DevOps & Cloud Engineering Simulation
 
 ---
 
-**Last Updated:** November 2025
+**Last Updated:** December 2025
 
-# Week 3 Complete
+# Week 4 Complete
