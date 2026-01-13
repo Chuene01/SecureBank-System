@@ -153,7 +153,7 @@ Success  / Failure → Auto Rollback
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 ### CI/CD
 - **GitHub Actions** - Automated workflows
@@ -376,4 +376,4 @@ kubectl logs -l app=banking-backend
 **Prepared by:** Ntando, Tumelo, Kagiso & Florence
 **Submission Date:** December 13, 2025  
 **Week:** 3 - CI/CD & Deployment Automation  
-**Status:** Infrastructure Complete, Pending Deployment Logs
+**Status:** Infrastructure Complete
