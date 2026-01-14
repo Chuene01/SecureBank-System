@@ -304,4 +304,13 @@ It is not intended for commercial use.
 
 ---
 
+##  Backlog
+<img width="1596" height="708" alt="image" src="https://github.com/user-attachments/assets/3e666e48-451c-4501-9a45-ac2d41869e37" />
+Backlog was originally managed in a separate repository and is referenced for traceability
+
+Done by Thubelihle Titi
+
+---
+
 **Last Updated:** January 2026
+
