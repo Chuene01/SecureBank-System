@@ -216,23 +216,54 @@
         <button class="confirm-btn" onclick="confirmWithdrawal()">Confirm</button>
     </div>
 </div>
+
+<script src="../js/config.js"></script>
+
 <script>
-let balance = Number(localStorage.getItem("balance")) || 0;
+let balance = 0;
 
-document.getElementById("currentBalance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+async function loadWithdrawBalance() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
 
-document.getElementById("afterBalance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    try {
+        const res = await fetch(`${API_BASE_URL}/balance`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-document.getElementById("remainingBalance").innerText =
-    "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        if (!res.ok) {
+            throw new Error("Failed to fetch balance");
+        }
 
+        const data = await res.json();
+        balance = data.balance;
 
-// Update remaining balance on load
-document.getElementById("remainingBalance").innerText =
-    "R" + balance.toLocaleString();
+        document.getElementById("currentBalance").innerText =
+            "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
 
+        document.getElementById("afterBalance").innerText =
+            "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+        document.getElementById("remainingBalance").innerText =
+            "R" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+    } catch (err) {
+        console.error(err);
+        alert("Session expired. Please log in again.");
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+}
+
+loadWithdrawBalance();
+</script>
+
+<script>
 // Reset active button styling
 function clearActive() {
     document.querySelectorAll(".quick-select button").forEach(btn => {
@@ -269,7 +300,8 @@ function selectCustom() {
 
 // Recalculate remaining balance when typing
 function updateValues() {
-    let entered = Number(document.getElementById("amountInput").value);
+    let entered = parseFloat(
+    document.getElementById("amountInput").value.replace(/[^\d.]/g, "")) || 0;
     let remaining = balance - entered;
 
     if (remaining < 0) {
@@ -278,7 +310,7 @@ function updateValues() {
     }
 
     document.getElementById("remainingBalance").innerText =
-    "R" + storedBalance.toLocaleString();
+    "R" + remaining.toLocaleString();
 }
 
 function generateId() {
@@ -287,51 +319,55 @@ function generateId() {
 </script>
 
 <script>
-function confirmWithdrawal() {
-    let amount = Number(document.getElementById("amountInput").value);
+async function confirmWithdrawal() {
+    const rawValue = document.getElementById("amountInput").value;
+    const amount = parseFloat(rawValue.replace(/[^\d.]/g, ""));
 
-    // Validate input
-    if (amount <= 0) {
+    if (!amount || amount <= 0) {
         alert("Enter a valid withdrawal amount.");
         return;
     }
 
-    // Get stored balance
-    let storedBalance = Number(localStorage.getItem("balance"));
-    if (isNaN(storedBalance)) {
-        storedBalance = 0;
-    }
-
-    // Ensure funds available
-    if (amount > storedBalance) {
-        alert("Insufficient funds.");
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        alert("You are not logged in.");
+        window.location.href = "login.html";
         return;
     }
 
-    // New balance
-    let newBalance = storedBalance - amount;
+    try {
+        const response = await fetch(`${API_BASE_URL}/withdraw`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ amount })
+        });
 
-    // Update balance
-    localStorage.setItem("balance", newBalance);
+        const data = await response.json();
 
-    // Save transaction history
-    let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    transactions.push({
-        type: "withdrawal",
-        description: "Withdrawal",
-        amount: amount,
-        balance: newBalance,
-        date: new Date(),
-        id: "TX" + Date.now().toString().slice(-6)
-    });
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+        if (!response.ok) {
+            const message =
+                typeof data.detail === "string"
+                    ? data.detail
+                    : "Withdrawal failed";
 
-    alert("Withdrawal successful.");
+            alert(message);
+            return;
+        }
 
-    // Redirect back to dashboard
-    window.location.href = "dashboard.html";
+        alert(`Withdrawal of R${amount.toFixed(2)} successful!`);
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("Server error. Please try again.");
+    }
 }
 </script>
+
+
 
 </body>
 </html>

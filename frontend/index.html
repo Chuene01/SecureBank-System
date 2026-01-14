@@ -514,8 +514,8 @@
         </nav>
         
         <div class="auth-buttons">
-            <button class="btn btn-secondary" onclick="window.location.href='Login.html'">Sign In</button>
-            <button class="btn btn-primary" onclick="window.location.href='Register.html'">Open Account</button>
+            <button class="btn btn-secondary" onclick="window.location.href='pages/login.html'">Sign In</button>
+            <button class="btn btn-primary" onclick="window.location.href='pages/register.html'">Open Account</button>
         </div>
         
         <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
@@ -527,8 +527,7 @@
             <h1>Banking Made Simple, Secure, and Smart</h1>
             <p>Join millions who trust SecureBank for their financial needs. Experience next-generation banking with cutting-edge security, intuitive features, and 24/7 support.</p>
             <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="window.location.href='register.html'">Get Started Free</button>
-                <button class="btn btn-secondary">Learn More</button>
+                <button class="btn btn-primary" onclick="window.location.href='pages/register.html'">Get Started Free</button>
             </div>
         </div>
         <div class="hero-image">
@@ -638,8 +637,7 @@
         <h2>Ready to Transform Your Banking Experience?</h2>
         <p>Join SecureBank today and discover a better way to manage your money. It's free to sign up, with no hidden fees.</p>
         <div class="cta-buttons">
-            <button class="btn btn-light" onclick="window.location.href='register.html'">Open Your Account</button>
-            <button class="btn btn-outline-light">See Plans & Pricing</button>
+            <button class="btn btn-light" onclick="window.location.href='pages/register.html'">Open Your Account</button>
         </div>
     </section>
 
@@ -723,6 +721,13 @@
                 }
             });
         });
+    </script>
+
+    <script>
+    const token = localStorage.getItem("access_token");
+    if (token) {
+        window.location.href = "dashboard.html";
+    }
     </script>
 </body>
 </html>

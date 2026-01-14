@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  mongodb_url: "mongodb://mongodb-service:27017/"
+  mongodb_database: "bankingdb"
+  environment: "production"

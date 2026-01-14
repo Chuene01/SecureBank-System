@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+
+    { "source": "/login", "destination": "/pages/login.html" },
+    { "source": "/register", "destination": "/pages/register.html" },
+    { "source": "/dashboard", "destination": "/pages/dashboard.html" },
+    { "source": "/deposit", "destination": "/pages/deposit.html" },
+    { "source": "/withdraw", "destination": "/pages/withdraw.html" },
+    { "source": "/history", "destination": "/pages/history.html" }
+  ]
+}
