@@ -1,4 +1,4 @@
-# OpenBank – Cloud-Native Banking System
+# SecureBank – Cloud-Native Banking System
 
 A cloud-native banking application built as part of a FullStack and DevOps-focused Agile simulation. The project combines frontend banking functionality, a FastAPI backend, MongoDB, and modern DevOps practices including CI/CD, containerization, and monitoring.
 
@@ -313,4 +313,5 @@ Done by Thubelihle Titi
 ---
 
 **Last Updated:** January 2026
+
 
