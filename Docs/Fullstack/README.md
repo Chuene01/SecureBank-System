@@ -307,9 +307,11 @@ It is not intended for commercial use.
 ##  Backlogs
 <img width="1600" height="704" alt="image" src="https://github.com/user-attachments/assets/7ac1ef1f-c46f-4249-b2c3-5472c55ca7a5" />
 
-Backlogs was originally managed in a separate repository and is referenced for traceability. 
+Backlogs was originally managed in a separate repository and is referenced for traceability.
+
 Done by Thubelihle Titi
 
 ---
 
 **Last Updated:** January 2026
+
