@@ -24,10 +24,9 @@ This project simulates the build of a real-world banking platform while applying
 |------|------|
 | Ntando | DevOps Lead / Project Manager |
 | Kagiso | Frontend Lead |
-| Chuene | Backend Lead |
+| Chuene | Backend Lead / Frontend Developer |
 | Elona | Frontend / Backend Developer |
 | Zwavhudi | Frontend Developer |
-| Mthobisi | Frontend Developer |
 | Jaden | UI/UX Designer |
 | Florence | QA & Documentation |
 | Elihle | Agile Project Manager |
@@ -35,25 +34,25 @@ This project simulates the build of a real-world banking platform while applying
 
 ---
 
-##  Tech Stack
+## Tech Stack
 
 ### Frontend
 - HTML5
 - CSS3 (Flexbox & Grid)
 - JavaScript (ES6+)
 - Fetch API
-- Optional React (DevOps phase extension)
+- Deployed with Vercel
 
 ### Backend
 - Python 3.9+
 - FastAPI
 - Uvicorn
 - PyMongo
-- JWT (Authentication)
-- Bcrypt / Passlib
+- JWT-based authentication
+- Argon2 password hashing (Passlib)
 
 ### Database
-- MongoDB
+- MongoDB Atlas (Cloud)
 
 ### DevOps & Cloud
 - Git & GitHub
@@ -67,19 +66,20 @@ This project simulates the build of a real-world banking platform while applying
 ##  Core Features
 
 ### Banking Functionality
--  User Registration & Login
--  JWT Authentication
--  Account Dashboard
--  Deposit Money
--  Withdraw Money (with balance validation)
--  Transaction History
--  Responsive UI
+- User registration and login
+- JWT-based authentication
+- Account dashboard with live balance display
+- Deposit funds with server-side balance updates
+- Withdraw funds with balance validation
+- Transaction history (deposits & withdrawals)
+- Responsive, mobile-friendly user interface
 
 ### Security
-- Password hashing
-- JWT-protected routes
-- Input validation
-- CORS configuration
+- Password hashing using Argon2
+- JWT-based authentication with protected API routes
+- Secure token handling via Authorization Bearer headers
+- Input validation using Pydantic schemas
+- CORS configuration for frontend–backend communication
 
 ---
 
@@ -112,46 +112,62 @@ This project simulates the build of a real-world banking platform while applying
 
 ##  Project Structure
 
-```
-project-folder/
+```text
+BANKING-SYSTEM-FRONT-END/
 │
-├── backend/
-│   ├── main.py                # FastAPI entry point
-│   ├── app/
-│   │   ├── routes/            # API routes
-│   │   ├── models/            # Database models
-│   │   ├── middleware/        # JWT verification
-│   │   └── config/            # MongoDB config
-│   └── requirements.txt
+├── backend/                         # FastAPI backend
+│   ├── __pycache__/
+│   ├── venv/                        # Local Python virtual environment
+│   ├── auth_utils.py                # JWT auth helpers
+│   ├── auth.py                      # Authentication logic
+│   ├── crud.py                      # Database CRUD operations
+│   ├── database.py                  # MongoDB Atlas connection
+│   ├── main.py                      # FastAPI entry point
+│   ├── models.py                   # Database models
+│   ├── schemas.py                  # Pydantic schemas
+│   ├── requirements.txt            # Python dependencies
+│   ├── Dockerfile                  # Backend Docker image
+│   ├── start.sh                    # Backend startup script
+│   ├── package.json                # Backend scripts/config (if used)
+│   └── README.md                   # Backend documentation
 │
-├── frontend/
-│   ├── login.html
-│   ├── register.html
-│   ├── dashboard.html
-│   ├── deposit.html
-│   ├── withdraw.html
-│   ├── history.html
-│   ├── styles.css
-│   └── js/
-│       ├── api.js
-│       ├── auth.js
-│       └── utils.js
+├── frontend/                        # Frontend (HTML/CSS/JS)
+│   ├── css/                         # Stylesheets
+│   ├── js/
+│   │   ├── config.js                # API base URL & config
+│   │   └── index.js                 # Shared frontend logic
+│   ├── pages/
+│   │   ├── login.html               # Login page
+│   │   ├── register.html            # Registration page
+│   │   ├── dashboard.html           # User dashboard
+│   │   ├── deposit.html             # Deposit page
+│   │   ├── withdraw.html            # Withdrawal page
+│   │   └── history.html             # Transaction history
+│   └── README.md                   # Frontend documentation
 │
-├── docker/
-│   ├── Dockerfile.backend
-│   ├── Dockerfile.frontend
-│   └── docker-compose.yml
+├── UI Screenshots/                  # UI evidence for deliverables
+│   ├── Dashboard 1.PNG
+│   ├── Dashboard 2.PNG
+│   ├── Deposit money.PNG
+│   ├── Withdraw money.PNG
+│   ├── Sign in page.PNG
+│   ├── Registration Page.PNG
+│   └── Transaction history.PNG
 │
-├── docs/
-│   ├── architecture/
-│   ├── guides/
-│   └── screenshots/
+├── devops/
+│   ├── docker/                      # DevOps Docker resources
+│   └── .gitignore
 │
-├── .github/workflows/
-│   └── ci.yml
+├── kubernetes/                      # Kubernetes manifests (Week 3)
+├── terraform/                       # Infrastructure as Code (optional)
 │
-├── README.md
-└── .env.example
+├── nginx.conf                       # Nginx config for frontend
+├── Dockerfile                       # Frontend Docker image
+├── docker-compose.yml               # Local multi-container setup
+├── vercel.json                      # Vercel routing configuration
+├── index.html                       # Landing / home page
+├── README.md                        # Main project documentation
+└── .env.example                     # Environment variable template
 ```
 
 ---
@@ -160,9 +176,10 @@ project-folder/
 
 ### Prerequisites
 - Python 3.9+
-- MongoDB
+- MongoDB Atlas (cloud database)
 - Git
-- VS Code (recommended)
+- VS Code
+- VS Code Live Server extension
 
 ### 1. Start the Backend
 
@@ -174,76 +191,85 @@ uvicorn main:app --reload
 ```
 
  **Backend will run at:**
-- Application: http://127.0.0.1:8000
-- API Docs: http://127.0.0.1:8000/docs
+- API root: http://127.0.0.1:8000
+- Interactive API Docs (Swagger UI): http://127.0.0.1:8000/docs
 
 ### 2. Start the Frontend
 
 **Option 1 — VS Code Live Server**
 - Right-click `login.html` → Open with Live Server
 
-**Option 2 — Python server**
-```bash
-cd frontend
-python -m http.server 3000
-```
-
- **Frontend runs at:** http://localhost:3000
+ **Frontend runs at:** http://127.0.0.1:5500/
 
 ---
 
 ##  Key Fixes & Improvements Implemented
 
--  Login now verifies passwords correctly
--  Dashboard shows logged-in username & email
--  Dynamic account number generation
--  Deposit & withdraw pages sync balances
--  Overdraft prevention enforced
--  Deposits & withdrawals logged correctly
--  Transaction history fully synced
--  Improved email validation rules
+- Corrected login authentication flow with secure password verification
+- Ensured dashboard displays the authenticated user’s username and email
+- Implemented dynamic account number generation based on user identity
+- Synced deposit and withdrawal balances across dashboard and transaction pages
+- Enforced overdraft protection with server-side balance validation
+- Logged deposits and withdrawals reliably in MongoDB
+- Fully synchronized transaction history with backend data
+- Improved email-based login validation and error handling
 
 ---
 
 ##  State Persistence
 
-- User session stored in `localStorage`
-- Balance persists during session navigation
+- User authentication state is maintained using a JWT stored in localStorage
+- Account balance and transactions are persisted in MongoDB Atlas and retrieved via secured API endpoints
+- Frontend state (e.g. balance display) is refreshed from the backend on page load to ensure consistency
 
- **Note:** Balance resets on browser clear or backend restart  
- MongoDB persistence planned
+ **Note:** Clearing the browser storage logs the user out but does not reset account data
+MongoDB serves as the single source of truth for balances and transaction history
 
 ---
 
-##  Docker (Week 2)
+##  Docker
 
 ```bash
 docker-compose up --build
 ```
 
-**Services:**
-- Frontend → `localhost:3000`
-- Backend → `localhost:8000`
-- MongoDB → `localhost:27017`
+## Services
+
+### Local Development
+- Backend API → http://localhost:8000 (FastAPI)
+- Frontend → Static HTML/CSS/JS served locally or via Nginx
+- Database → MongoDB Atlas (cloud-hosted)
+
+### Production
+- Frontend → Vercel
+- Backend → Render
+- Database → MongoDB Atlas
 
 ---
 
-##  API Overview
+## API Overview
 
 ### Auth
 
 | Method | Endpoint |
 |--------|----------|
-| POST | `/api/auth/register` |
-| POST | `/api/auth/login` |
+| POST | `/register` |
+| POST | `/login` |
+
+### Account
+
+| Method | Endpoint |
+|--------|----------|
+| GET | `/profile` |
+| GET | `/balance` |
 
 ### Transactions
 
 | Method | Endpoint |
 |--------|----------|
-| POST | `/api/transactions/deposit` |
-| POST | `/api/transactions/withdraw` |
-| GET | `/api/transactions/history` |
+| POST | `/deposit` |
+| POST | `/withdraw` |
+| GET | `/transactions` |
 
 ---
 
@@ -271,20 +297,11 @@ This project demonstrates:
 
 ---
 
-##  Support
-
-- Open a GitHub issue
-- Contact Ntando (DevOps)
-- Contact Elihle (Project Manager)
-
----
-
 ##  License
 
-Educational project – DevOps & Cloud Engineering Simulation
+This project was developed for educational purposes as part of a DevOps & Cloud Engineering simulation.
+It is not intended for commercial use.
 
 ---
 
-**Last Updated:** November 2025
-
-# Week 3 Complete
+**Last Updated:** January 2026
