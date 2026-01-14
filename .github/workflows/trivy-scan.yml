@@ -1,0 +1,212 @@
+name: Trivy Security Scan
+
+on:
+  push:
+    branches: [ "main", "dev", "stretch-challenges", "devops-week4" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  schedule:
+    - cron: '30 17 * * 5'  # Weekly scan every Friday at 5:30 PM UTC
+
+permissions:
+  contents: read
+
+jobs:
+  scan-backend:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    name: Scan Backend Image
+    runs-on: ubuntu-latest
+   
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+     
+      - name: Build backend Docker image
+        run: |
+          docker build -t banking-backend:${{ github.sha }} ./backend
+     
+      - name: Run Trivy vulnerability scanner (SARIF format)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'banking-backend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-backend-results.sarif'
+          severity: 'CRITICAL,HIGH'
+     
+      - name: Upload Backend results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-backend-results.sarif'
+          category: 'backend-image'
+     
+      - name: Generate Backend human-readable report
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'banking-backend:${{ github.sha }}'
+          format: 'table'
+          output: 'trivy-backend-report.txt'
+          severity: 'CRITICAL,HIGH'
+     
+      - name: Upload Backend report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-backend-report
+          path: trivy-backend-report.txt
+          retention-days: 30
+
+  scan-frontend:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    name: Scan Frontend Image
+    runs-on: ubuntu-latest
+   
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+     
+      - name: Build frontend Docker image
+        run: |
+          docker build -t banking-frontend:${{ github.sha }} ./frontend
+     
+      - name: Run Trivy vulnerability scanner (SARIF format)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'banking-frontend:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-frontend-results.sarif'
+          severity: 'CRITICAL,HIGH'
+     
+      - name: Upload Frontend results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-frontend-results.sarif'
+          category: 'frontend-image'
+     
+      - name: Generate Frontend human-readable report
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'banking-frontend:${{ github.sha }}'
+          format: 'table'
+          output: 'trivy-frontend-report.txt'
+          severity: 'CRITICAL,HIGH'
+     
+      - name: Upload Frontend report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-frontend-report
+          path: trivy-frontend-report.txt
+          retention-days: 30
+
+  scan-summary:
+    needs: [scan-backend, scan-frontend]
+    runs-on: ubuntu-latest
+    if: always()
+   
+    steps:
+      - name: Security Scan Summary
+        run: |
+          echo " Security Scan Completed"
+          echo "================================"
+          echo "Backend Scan: ${{ needs.scan-backend.result }}"
+          echo "Frontend Scan: ${{ needs.scan-frontend.result }}"
+          echo ""
+          echo " View detailed results:"
+          echo "- GitHub Security tab: https://github.com/${{ github.repository }}/security/code-scanning"
+          echo "- Download reports from Artifacts section"
+
+  notify-teams:
+    name: Notify Microsoft Teams
+    needs: [scan-backend, scan-frontend]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Determine Overall Status
+        id: status
+        run: |
+          BACKEND="${{ needs.scan-backend.result }}"
+          FRONTEND="${{ needs.scan-frontend.result }}"
+         
+          if [[ "$BACKEND" == "success" && "$FRONTEND" == "success" ]]; then
+            echo "status=SUCCESS" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "color=28a745" >> $GITHUB_OUTPUT
+          elif [[ "$BACKEND" == "failure" || "$FRONTEND" == "failure" ]]; then
+            echo "status=FAILURE" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "color=dc3545" >> $GITHUB_OUTPUT
+          else
+            echo "status=CANCELLED" >> $GITHUB_OUTPUT
+            echo "emoji=⚠️" >> $GITHUB_OUTPUT
+            echo "color=ffc107" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Status to Microsoft Teams
+        run: |
+          curl -H 'Content-Type: application/json' -d '{
+            "@type": "MessageCard",
+            "@context": "https://schema.org/extensions",
+            "summary": "Trivy Security Scan - ${{ steps.status.outputs.status }}",
+            "themeColor": "${{ steps.status.outputs.color }}",
+            "title": "${{ steps.status.outputs.emoji }} OpenBank Security Scan - ${{ steps.status.outputs.status }}",
+            "sections": [
+              {
+                "activityTitle": "Container Security Scan Results",
+                "activitySubtitle": "Trivy vulnerability scanning completed",
+                "facts": [
+                  {
+                    "name": "Repository:",
+                    "value": "${{ github.repository }}"
+                  },
+                  {
+                    "name": "Branch:",
+                    "value": "${{ github.ref_name }}"
+                  },
+                  {
+                    "name": "Backend Scan:",
+                    "value": "${{ needs.scan-backend.result }}"
+                  },
+                  {
+                    "name": "Frontend Scan:",
+                    "value": "${{ needs.scan-frontend.result }}"
+                  },
+                  {
+                    "name": "Triggered by:",
+                    "value": "${{ github.actor }}"
+                  },
+                  {
+                    "name": "Event:",
+                    "value": "${{ github.event_name }}"
+                  }
+                ],
+                "text": "Security vulnerability scan completed. Check GitHub Security tab for detailed findings."
+              }
+            ],
+            "potentialAction": [
+              {
+                "@type": "OpenUri",
+                "name": "View Workflow Run",
+                "targets": [
+                  {
+                    "os": "default",
+                    "uri": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              },
+              {
+                "@type": "OpenUri",
+                "name": "View Security Alerts",
+                "targets": [
+                  {
+                    "os": "default",
+                    "uri": "https://github.com/${{ github.repository }}/security/code-scanning"
+                  }
+                ]
+              }
+            ]
+          }' '${{ secrets.TEAMS_WEBHOOK_URL }}' || echo " Failed to send Teams notification"
